@@ -1,0 +1,2497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java 8 Complete Mastery Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg: #0a0d14;
+  --bg2: #0f1320;
+  --bg3: #141929;
+  --bg4: #1a2035;
+  --card: #111827;
+  --border: #1e2d45;
+  --accent: #f97316;
+  --accent2: #fb923c;
+  --blue: #3b82f6;
+  --cyan: #06b6d4;
+  --green: #22c55e;
+  --purple: #a855f7;
+  --red: #ef4444;
+  --yellow: #eab308;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --code-bg: #0d1117;
+  --sidebar-w: 280px;
+  --radius: 10px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+
+/* Progress Bar */
+#progress-bar{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,var(--accent),var(--cyan));z-index:9999;transition:width 0.1s}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+/* Sidebar */
+#sidebar{position:fixed;left:0;top:0;width:var(--sidebar-w);height:100vh;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;z-index:100;padding:0 0 2rem}
+#sidebar::-webkit-scrollbar{width:3px}
+.sidebar-logo{padding:1.5rem 1.25rem 1rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg2);z-index:10}
+.sidebar-logo h2{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);letter-spacing:0.05em}
+.sidebar-logo p{font-size:0.7rem;color:var(--text3);margin-top:2px}
+.toc-section{padding:0.75rem 1rem 0.25rem;font-size:0.65rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em}
+.toc-link{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 1.25rem;font-size:0.78rem;color:var(--text2);text-decoration:none;border-left:2px solid transparent;transition:all 0.2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toc-link:hover,.toc-link.active{color:var(--accent);border-left-color:var(--accent);background:rgba(249,115,22,0.06)}
+.toc-link .icon{font-size:0.8rem;flex-shrink:0}
+
+/* Main Layout */
+#main{margin-left:var(--sidebar-w);min-height:100vh}
+.content{max-width:960px;margin:0 auto;padding:2rem 2.5rem 6rem}
+
+/* Mobile Toggle */
+#sidebar-toggle{display:none;position:fixed;top:1rem;left:1rem;z-index:200;background:var(--card);border:1px solid var(--border);color:var(--text);padding:0.5rem 0.75rem;border-radius:8px;cursor:pointer;font-size:1.2rem}
+
+/* Hero */
+.hero{padding:5rem 0 3rem;border-bottom:1px solid var(--border);margin-bottom:3rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(249,115,22,0.08) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.3);color:var(--accent);padding:0.35rem 0.9rem;border-radius:100px;font-size:0.75rem;font-weight:600;margin-bottom:1.5rem;letter-spacing:0.05em}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;line-height:1.1;margin-bottom:1rem;background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1.05rem;color:var(--text2);max-width:640px;margin-bottom:2rem;line-height:1.8}
+.hero-stats{display:flex;gap:2rem;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent)}
+.stat-label{font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em}
+
+/* Section */
+.section{margin-bottom:4rem}
+.section-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.section-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.icon-orange{background:rgba(249,115,22,0.15)}
+.icon-blue{background:rgba(59,130,246,0.15)}
+.icon-cyan{background:rgba(6,182,212,0.15)}
+.icon-green{background:rgba(34,197,94,0.15)}
+.icon-purple{background:rgba(168,85,247,0.15)}
+.icon-yellow{background:rgba(234,179,8,0.15)}
+.icon-red{background:rgba(239,68,68,0.15)}
+.section-header h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;color:var(--text)}
+.section-num{font-size:0.75rem;color:var(--text3);font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.25rem;transition:border-color 0.2s}
+.card:hover{border-color:rgba(249,115,22,0.3)}
+.card-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem}
+.card-sub{font-size:0.82rem;color:var(--text2);margin-bottom:0.75rem;line-height:1.6}
+.card p{font-size:0.88rem;color:var(--text2);line-height:1.7}
+.card p+p{margin-top:0.5rem}
+
+/* Feature Grid */
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;transition:all 0.2s}
+.feature-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.feature-card .feat-icon{font-size:1.4rem;margin-bottom:0.6rem}
+.feature-card h4{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;margin-bottom:0.4rem;color:var(--text)}
+.feature-card p{font-size:0.78rem;color:var(--text2);line-height:1.5}
+
+/* Code Blocks */
+.code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1rem;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);font-size:0.72rem;color:var(--text3)}
+.code-lang{color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:600;font-size:0.7rem}
+.code-copy{cursor:pointer;background:none;border:1px solid var(--border);color:var(--text3);padding:0.25rem 0.6rem;border-radius:4px;font-size:0.65rem;transition:all 0.2s}
+.code-copy:hover{color:var(--accent);border-color:var(--accent)}
+pre{padding:1.25rem;overflow-x:auto;font-size:0.82rem;line-height:1.7}
+pre code{font-family:'JetBrains Mono',monospace;color:#e2e8f0}
+.kw{color:#c792ea}
+.cl{color:#ffcb8b}
+.fn{color:#82aaff}
+.str{color:#c3e88d}
+.cm{color:#546e7a;font-style:italic}
+.num{color:#f78c6c}
+.an{color:#89ddff}
+.ty{color:#ffcb8b}
+
+/* Collapsible */
+.collapsible{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:0.75rem;overflow:hidden}
+.collapsible-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;cursor:pointer;transition:background 0.2s;user-select:none}
+.collapsible-header:hover{background:rgba(255,255,255,0.03)}
+.collapsible-header h4{font-size:0.88rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:0.5rem}
+.collapsible-arrow{color:var(--text3);transition:transform 0.25s;font-size:0.8rem}
+.collapsible.open .collapsible-arrow{transform:rotate(180deg)}
+.collapsible-body{display:none;padding:0 1.25rem 1.25rem;font-size:0.85rem;color:var(--text2);line-height:1.7;border-top:1px solid var(--border)}
+.collapsible.open .collapsible-body{display:block}
+
+/* Callout Boxes */
+.callout{border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:0.85rem;line-height:1.6;border-left:3px solid}
+.callout-title{font-weight:700;margin-bottom:0.4rem;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.05em}
+.callout.info{background:rgba(59,130,246,0.08);border-color:var(--blue);color:#93c5fd}
+.callout.info .callout-title{color:var(--blue)}
+.callout.warning{background:rgba(234,179,8,0.08);border-color:var(--yellow);color:#fde68a}
+.callout.warning .callout-title{color:var(--yellow)}
+.callout.success{background:rgba(34,197,94,0.08);border-color:var(--green);color:#86efac}
+.callout.success .callout-title{color:var(--green)}
+.callout.danger{background:rgba(239,68,68,0.08);border-color:var(--red);color:#fca5a5}
+.callout.danger .callout-title{color:var(--red)}
+.callout.purple{background:rgba(168,85,247,0.08);border-color:var(--purple);color:#d8b4fe}
+.callout.purple .callout-title{color:var(--purple)}
+.callout.orange{background:rgba(249,115,22,0.08);border-color:var(--accent);color:#fdba74}
+.callout.orange .callout-title{color:var(--accent)}
+
+/* Tags */
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:100px;font-size:0.7rem;font-weight:600;margin:0.15rem}
+.tag-orange{background:rgba(249,115,22,0.15);color:var(--accent)}
+.tag-blue{background:rgba(59,130,246,0.15);color:#93c5fd}
+.tag-green{background:rgba(34,197,94,0.15);color:#86efac}
+.tag-red{background:rgba(239,68,68,0.15);color:#fca5a5}
+.tag-purple{background:rgba(168,85,247,0.15);color:#d8b4fe}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:1rem 0;border-radius:8px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:0.82rem}
+th{background:rgba(249,115,22,0.08);color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;padding:0.75rem 1rem;text-align:left;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border)}
+td{padding:0.65rem 1rem;border-bottom:1px solid rgba(30,45,69,0.5);color:var(--text2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even){background:rgba(255,255,255,0.015)}
+tr:hover td{background:rgba(249,115,22,0.04)}
+.td-good{color:var(--green)}
+.td-bad{color:var(--red)}
+.td-ok{color:var(--yellow)}
+
+/* Inline code */
+code:not(pre code){background:rgba(249,115,22,0.12);color:var(--accent);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.82em}
+
+/* Lists */
+ul.styled,ol.styled{padding-left:1.5rem;color:var(--text2);font-size:0.88rem;line-height:1.9}
+ul.styled li::marker{color:var(--accent)}
+ol.styled li::marker{color:var(--accent);font-weight:700}
+ul.styled li strong,ol.styled li strong{color:var(--text)}
+
+/* QA */
+.qa-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:0.75rem;overflow:hidden}
+.qa-q{padding:1rem 1.25rem;font-size:0.88rem;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:flex-start;gap:0.75rem;user-select:none;transition:background 0.2s}
+.qa-q:hover{background:rgba(255,255,255,0.03)}
+.qa-q .q-icon{color:var(--accent);font-weight:800;font-size:0.9rem;flex-shrink:0;margin-top:0.05rem}
+.qa-a{display:none;padding:0 1.25rem 1.25rem 2.75rem;font-size:0.84rem;color:var(--text2);line-height:1.7;border-top:1px solid var(--border)}
+.qa-item.open .qa-a{display:block}
+
+/* Timeline */
+.timeline{position:relative;padding-left:2rem;margin:1.5rem 0}
+.timeline::before{content:'';position:absolute;left:0.55rem;top:0.5rem;bottom:0;width:1px;background:var(--border)}
+.timeline-item{position:relative;margin-bottom:1.5rem}
+.timeline-dot{position:absolute;left:-1.45rem;top:0.35rem;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);box-shadow:0 0 0 2px var(--accent)}
+.timeline-year{font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:var(--accent);margin-bottom:0.25rem;letter-spacing:0.05em}
+.timeline-title{font-weight:600;color:var(--text);font-size:0.9rem;margin-bottom:0.25rem}
+.timeline-desc{font-size:0.82rem;color:var(--text2);line-height:1.6}
+
+/* Diagram */
+.diagram{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1rem 0;overflow-x:auto}
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:0.5rem;justify-content:center}
+.flow-box{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.8rem;font-size:0.78rem;font-weight:600;color:var(--text);text-align:center;min-width:90px}
+.flow-box.orange{border-color:var(--accent);color:var(--accent);background:rgba(249,115,22,0.08)}
+.flow-box.blue{border-color:var(--blue);color:#93c5fd;background:rgba(59,130,246,0.08)}
+.flow-box.green{border-color:var(--green);color:#86efac;background:rgba(34,197,94,0.08)}
+.flow-box.purple{border-color:var(--purple);color:#d8b4fe;background:rgba(168,85,247,0.08)}
+.flow-arrow{color:var(--text3);font-size:1rem}
+
+/* Cheat Sheet */
+.cheat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0.75rem}
+.cheat-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1rem}
+.cheat-item h5{font-size:0.75rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.4rem}
+.cheat-item code{display:block;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text2);background:var(--code-bg);padding:0.4rem 0.6rem;border-radius:4px;white-space:pre-wrap;word-break:break-all;line-height:1.5}
+
+/* Difficulty Badge */
+.diff{display:inline-block;padding:0.15rem 0.55rem;border-radius:100px;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem}
+.diff-easy{background:rgba(34,197,94,0.15);color:#86efac}
+.diff-med{background:rgba(234,179,8,0.15);color:#fde68a}
+.diff-hard{background:rgba(239,68,68,0.15);color:#fca5a5}
+
+/* Key Takeaway */
+.takeaway{background:linear-gradient(135deg,rgba(249,115,22,0.08),rgba(6,182,212,0.05));border:1px solid rgba(249,115,22,0.25);border-radius:var(--radius);padding:1.25rem 1.5rem;margin:1.5rem 0}
+.takeaway-title{font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem}
+.takeaway ul{padding-left:1.25rem;color:var(--text2);font-size:0.85rem;line-height:1.8}
+.takeaway ul li::marker{color:var(--accent)}
+
+/* Use/Avoid */
+.use-avoid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.use-box,.avoid-box{border-radius:8px;padding:1rem 1.1rem;font-size:0.82rem;line-height:1.6}
+.use-box{background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.25)}
+.avoid-box{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.25)}
+.use-box h5{color:var(--green);font-size:0.72rem;text-transform:uppercase;font-weight:700;margin-bottom:0.5rem;letter-spacing:0.08em}
+.avoid-box h5{color:var(--red);font-size:0.72rem;text-transform:uppercase;font-weight:700;margin-bottom:0.5rem;letter-spacing:0.08em}
+.use-box ul,.avoid-box ul{padding-left:1.1rem;color:var(--text2)}
+.use-box ul li::marker{color:var(--green)}
+.avoid-box ul li::marker{color:var(--red)}
+
+/* Responsive */
+@media(max-width:900px){
+  #sidebar{transform:translateX(-100%);transition:transform 0.3s}
+  #sidebar.open{transform:translateX(0)}
+  #sidebar-toggle{display:block}
+  #main{margin-left:0}
+  .content{padding:1.5rem 1.25rem 5rem}
+  .use-avoid{grid-template-columns:1fr}
+  .hero h1{font-size:2rem}
+  .hero{padding:4rem 0 2rem}
+}
+@media(max-width:600px){
+  .feature-grid{grid-template-columns:1fr 1fr}
+  .cheat-grid{grid-template-columns:1fr}
+  .hero-stats{gap:1rem}
+}
+
+/* Misc */
+h3{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin:1.75rem 0 0.75rem}
+h4{font-size:0.95rem;font-weight:600;color:var(--text);margin:1.25rem 0 0.5rem}
+p{color:var(--text2);font-size:0.88rem;line-height:1.8;margin-bottom:0.75rem}
+.divider{height:1px;background:var(--border);margin:2.5rem 0}
+.flex-row{display:flex;gap:1rem;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.6rem;border-radius:100px;font-size:0.7rem;font-weight:600}
+strong{color:var(--text);font-weight:600}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <h2>☕ JAVA 8 MASTERY</h2>
+    <p>Complete Senior Engineer Guide</p>
+  </div>
+
+  <div class="toc-section">Overview</div>
+  <a href="#hero" class="toc-link"><span class="icon">🏠</span> Introduction</a>
+  <a href="#evolution" class="toc-link"><span class="icon">📈</span> Java Evolution</a>
+
+  <div class="toc-section">Core Features</div>
+  <a href="#lambdas" class="toc-link"><span class="icon">λ</span> Lambda Expressions</a>
+  <a href="#functional" class="toc-link"><span class="icon">🔧</span> Functional Interfaces</a>
+  <a href="#streams" class="toc-link"><span class="icon">🌊</span> Stream API</a>
+  <a href="#method-refs" class="toc-link"><span class="icon">::</span> Method References</a>
+  <a href="#default-methods" class="toc-link"><span class="icon">🔀</span> Default Methods</a>
+  <a href="#optional" class="toc-link"><span class="icon">❓</span> Optional Class</a>
+  <a href="#datetime" class="toc-link"><span class="icon">📅</span> Date & Time API</a>
+  <a href="#foreach" class="toc-link"><span class="icon">🔁</span> forEach()</a>
+  <a href="#nashorn" class="toc-link"><span class="icon">🕷</span> Nashorn Engine</a>
+  <a href="#stringjoiner" class="toc-link"><span class="icon">🔗</span> StringJoiner</a>
+  <a href="#parallel" class="toc-link"><span class="icon">⚡</span> Parallel Streams</a>
+  <a href="#collectors" class="toc-link"><span class="icon">🗂</span> Collectors API</a>
+  <a href="#spliterator" class="toc-link"><span class="icon">✂</span> Spliterator</a>
+  <a href="#completable" class="toc-link"><span class="icon">🔮</span> CompletableFuture</a>
+
+  <div class="toc-section">Deep Dives</div>
+  <a href="#stream-master" class="toc-link"><span class="icon">🌊</span> Stream Master Section</a>
+  <a href="#realworld" class="toc-link"><span class="icon">🏗</span> Real-World Examples</a>
+  <a href="#performance" class="toc-link"><span class="icon">📊</span> Performance Analysis</a>
+
+  <div class="toc-section">Reference</div>
+  <a href="#interviews" class="toc-link"><span class="icon">🎯</span> Interview Prep (30+ Q)</a>
+  <a href="#mistakes" class="toc-link"><span class="icon">⚠️</span> Common Mistakes</a>
+  <a href="#cheatsheet" class="toc-link"><span class="icon">📋</span> Cheat Sheet</a>
+  <a href="#comparison" class="toc-link"><span class="icon">⚖</span> Comparison Tables</a>
+  <a href="#bestpractices" class="toc-link"><span class="icon">✅</span> Best Practices</a>
+  <a href="#summary" class="toc-link"><span class="icon">🎓</span> Final Summary</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+<div class="content">
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-badge">☕ Released: March 18, 2014 · LTS Milestone</div>
+  <h1>Java 8 Complete<br>Mastery Guide</h1>
+  <p>The definitive senior-engineer reference for Java 8's paradigm shift — from imperative to functional, from verbose to expressive. Everything you need from internals to production patterns.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">14</div><div class="stat-label">Core Features</div></div>
+    <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Interview Q&A</div></div>
+    <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Code Examples</div></div>
+    <div class="stat"><div class="stat-num">8yr</div><div class="stat-label">Senior Level</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ EVOLUTION ═══════════════════ -->
+<section class="section" id="evolution">
+  <div class="section-header">
+    <div class="section-icon icon-orange">📈</div>
+    <div>
+      <div class="section-num">§ 01</div>
+      <h2>Java Evolution Context</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔥 The Problem Java 8 Solved</div>
+    <p>Before Java 8, writing concurrent, expressive, collection-processing code required verbose boilerplate. Anonymous inner classes, external iteration, null handling — all were pain points. Java 8 introduced a functional programming model alongside the OOP paradigm, not replacing it.</p>
+    <p>The driving force: <strong>multicore processors became the norm</strong>. Java needed a way to make parallelism easy without manual thread management. Streams + Fork/Join pool solved exactly this.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">JAVA 1.0–4 (1996–2002)</div>
+      <div class="timeline-title">OOP Foundation</div>
+      <div class="timeline-desc">Classes, interfaces, garbage collection. Single-paradigm: pure object-oriented.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">JAVA 5 (2004)</div>
+      <div class="timeline-title">Generics, Enums, Annotations</div>
+      <div class="timeline-desc">Type safety added. <code>for-each</code> loop introduced. Foundation for Stream API later.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">JAVA 7 (2011)</div>
+      <div class="timeline-title">Fork/Join, try-with-resources</div>
+      <div class="timeline-desc">Fork/Join framework planted the seed for parallel streams. Diamond operator added.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--accent);width:14px;height:14px;left:-1.65rem;top:0.2rem"></div>
+      <div class="timeline-year">JAVA 8 (2014) ← YOU ARE HERE</div>
+      <div class="timeline-title">Functional Revolution</div>
+      <div class="timeline-desc">Lambdas, Streams, Optional, new Date/Time, default methods, CompletableFuture. The biggest Java release since generics.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">JAVA 9–21 (2017–2023)</div>
+      <div class="timeline-title">Builds on Java 8</div>
+      <div class="timeline-desc">Records, sealed classes, pattern matching, virtual threads — all standing on the functional foundation Java 8 laid.</div>
+    </div>
+  </div>
+
+  <h3>Before vs After Java 8</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 7 — Filter + Sort (Verbose)</span></div>
+    <pre><code><span class="cm">// Java 7: External iteration, verbose, error-prone</span>
+<span class="ty">List</span>&lt;<span class="ty">String</span>&gt; names = <span class="an">Arrays</span>.<span class="fn">asList</span>(<span class="str">"Alice"</span>, <span class="str">"Bob"</span>, <span class="str">"Charlie"</span>, <span class="str">"Dave"</span>);
+<span class="ty">List</span>&lt;<span class="ty">String</span>&gt; result = <span class="kw">new</span> <span class="ty">ArrayList</span>&lt;&gt;();
+
+<span class="kw">for</span> (<span class="ty">String</span> name : names) {
+    <span class="kw">if</span> (name.length() > <span class="num">3</span>) {
+        result.add(name.toUpperCase());
+    }
+}
+<span class="an">Collections</span>.<span class="fn">sort</span>(result, <span class="kw">new</span> <span class="ty">Comparator</span>&lt;<span class="ty">String</span>&gt;() {
+    <span class="an">@Override</span>
+    <span class="kw">public int</span> <span class="fn">compare</span>(<span class="ty">String</span> a, <span class="ty">String</span> b) {
+        <span class="kw">return</span> a.<span class="fn">compareTo</span>(b);
+    }
+});</code></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Same Logic (Expressive)</span></div>
+    <pre><code><span class="cm">// Java 8: Internal iteration, declarative, readable</span>
+<span class="ty">List</span>&lt;<span class="ty">String</span>&gt; result = names.stream()
+    .filter(name -> name.length() > <span class="num">3</span>)
+    .map(<span class="ty">String</span>::toUpperCase)
+    .sorted()
+    .collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>());</code></pre>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">ℹ️ Key Paradigm Shift</div>
+    Java 8 moved from <strong>HOW</strong> (imperative: explicit loops, mutations) to <strong>WHAT</strong> (declarative: describe the desired result). This is the essence of functional programming layered onto Java's OOP model.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════ LAMBDAS ═══════════════════ -->
+<section class="section" id="lambdas">
+  <div class="section-header">
+    <div class="section-icon icon-orange">λ</div>
+    <div>
+      <div class="section-num">§ 02</div>
+      <h2>Lambda Expressions</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>A lambda expression is an anonymous function — a concise representation of a single-method interface (functional interface) that can be passed as a value, stored in a variable, or returned from a method.</p>
+  </div>
+
+  <h3>Internal Mechanism</h3>
+  <p>Lambdas are <strong>NOT</strong> syntactic sugar for anonymous inner classes. The JVM uses <code>invokedynamic</code> (introduced in Java 7) to link lambda call sites at runtime. The <code>LambdaMetafactory</code> generates the functional interface implementation dynamically. This means lambdas are more efficient — they don't require creating a new class file per use.</p>
+
+  <div class="diagram">
+    <div class="flow">
+      <div class="flow-box orange">Lambda Syntax</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box blue">invokedynamic</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box purple">LambdaMetafactory</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box green">Method Handle</div>
+    </div>
+    <div style="text-align:center;margin-top:0.75rem;font-size:0.75rem;color:var(--text3)">Lambda compilation path — no separate .class file generated per lambda</div>
+  </div>
+
+  <h3>Syntax</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Lambda Syntax Forms</span></div>
+    <pre><code><span class="cm">// Form 1: No parameters</span>
+<span class="ty">Runnable</span> r = () -> <span class="an">System</span>.out.<span class="fn">println</span>(<span class="str">"Hello"</span>);
+
+<span class="cm">// Form 2: Single parameter (parens optional)</span>
+<span class="ty">Consumer</span>&lt;<span class="ty">String</span>&gt; print = s -> <span class="an">System</span>.out.<span class="fn">println</span>(s);
+
+<span class="cm">// Form 3: Multiple parameters</span>
+<span class="ty">Comparator</span>&lt;<span class="ty">Integer</span>&gt; cmp = (a, b) -> a - b;
+
+<span class="cm">// Form 4: Block body with explicit return</span>
+<span class="ty">BiFunction</span>&lt;<span class="ty">Integer</span>, <span class="ty">Integer</span>, <span class="ty">Integer</span>&gt; add = (a, b) -> {
+    <span class="kw">int</span> sum = a + b;
+    <span class="kw">return</span> sum;
+};
+
+<span class="cm">// Form 5: Capturing effectively-final variables</span>
+<span class="kw">int</span> multiplier = <span class="num">3</span>; <span class="cm">// Must be effectively final</span>
+<span class="ty">Function</span>&lt;<span class="ty">Integer</span>, <span class="ty">Integer</span>&gt; times = n -> n * multiplier;</code></pre>
+  </div>
+
+  <div class="collapsible open">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🟢 Easy Example — Sorting with Lambda</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-easy">Easy</span>
+      <div class="code-block">
+        <pre><code><span class="ty">List</span>&lt;<span class="ty">String</span>&gt; cities = <span class="an">Arrays</span>.<span class="fn">asList</span>(<span class="str">"Mumbai"</span>, <span class="str">"Delhi"</span>, <span class="str">"Bangalore"</span>);
+
+<span class="cm">// Before Java 8</span>
+cities.<span class="fn">sort</span>(<span class="kw">new</span> <span class="ty">Comparator</span>&lt;<span class="ty">String</span>&gt;() {
+    <span class="kw">public int</span> <span class="fn">compare</span>(<span class="ty">String</span> a, <span class="ty">String</span> b){ <span class="kw">return</span> a.<span class="fn">compareTo</span>(b); }
+});
+
+<span class="cm">// Java 8: Lambda</span>
+cities.<span class="fn">sort</span>((a, b) -> a.<span class="fn">compareTo</span>(b));
+
+<span class="cm">// Even cleaner: Method reference</span>
+cities.<span class="fn">sort</span>(<span class="ty">String</span>::compareTo);</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🟡 Medium Example — Lambda as Strategy Pattern</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-med">Medium</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// Strategy pattern without verbose class hierarchy</span>
+<span class="an">@FunctionalInterface</span>
+<span class="kw">interface</span> <span class="ty">DiscountStrategy</span> {
+    <span class="kw">double</span> <span class="fn">apply</span>(<span class="kw">double</span> price);
+}
+
+<span class="kw">class</span> <span class="ty">PriceCalculator</span> {
+    <span class="kw">public double</span> <span class="fn">calculate</span>(<span class="kw">double</span> price, <span class="ty">DiscountStrategy</span> strategy) {
+        <span class="kw">return</span> strategy.<span class="fn">apply</span>(price);
+    }
+}
+
+<span class="cm">// Usage: inject behavior at call site</span>
+<span class="ty">PriceCalculator</span> calc = <span class="kw">new</span> <span class="ty">PriceCalculator</span>();
+
+<span class="ty">DiscountStrategy</span> noDiscount = price -> price;
+<span class="ty">DiscountStrategy</span> tenPercent = price -> price * <span class="num">0.9</span>;
+<span class="ty">DiscountStrategy</span> flatFifty  = price -> price - <span class="num">50</span>;
+
+calc.<span class="fn">calculate</span>(<span class="num">500</span>, tenPercent); <span class="cm">// → 450.0</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🔴 Hard Example — Lambda Variable Capture & Closure Gotcha</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-hard">Hard</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// GOTCHA: Lambdas capture variables, not their values over time</span>
+<span class="ty">List</span>&lt;<span class="ty">Supplier</span>&lt;<span class="ty">Integer</span>&gt;&gt; suppliers = <span class="kw">new</span> <span class="ty">ArrayList</span>&lt;&gt;();
+
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; <span class="num">3</span>; i++) {
+    <span class="kw">final int</span> copy = i; <span class="cm">// REQUIRED: i is not effectively final</span>
+    suppliers.<span class="fn">add</span>(() -> copy); <span class="cm">// OK with effectively-final copy</span>
+}
+<span class="cm">// suppliers.get(0).get() → 0, get(1).get() → 1, get(2).get() → 2</span>
+
+<span class="cm">// DEEP: Lambdas don't capture 'this' the same way as anon classes</span>
+<span class="kw">class</span> <span class="ty">Outer</span> {
+    <span class="kw">int</span> x = <span class="num">10</span>;
+    
+    <span class="ty">Runnable</span> <span class="fn">lambdaRef</span>() {
+        <span class="cm">// 'this' refers to Outer, not the lambda itself</span>
+        <span class="kw">return</span> () -> <span class="an">System</span>.out.<span class="fn">println</span>(x); <span class="cm">// accesses Outer.x</span>
+    }
+    
+    <span class="ty">Runnable</span> <span class="fn">anonRef</span>() {
+        <span class="kw">return new</span> <span class="ty">Runnable</span>() {
+            <span class="kw">int</span> x = <span class="num">99</span>; <span class="cm">// shadows Outer.x</span>
+            <span class="kw">public void</span> <span class="fn">run</span>() { <span class="an">System</span>.out.<span class="fn">println</span>(x); } <span class="cm">// prints 99!</span>
+        };
+    }
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-title">⚠️ Common Mistake</div>
+    Variables captured by lambdas must be <strong>effectively final</strong> (not reassigned after first assignment). Attempting to mutate a captured variable causes a compile error. Use an array wrapper trick (<code>int[] counter = {0};</code>) for mutation, but prefer streams' <code>reduce</code> or <code>collect</code> instead.
+  </div>
+
+  <div class="takeaway">
+    <div class="takeaway-title">🔑 Key Takeaways</div>
+    <ul>
+      <li>Lambdas use <code>invokedynamic</code> — NOT anonymous inner classes. No extra .class files.</li>
+      <li><code>this</code> inside a lambda refers to the enclosing class, not the lambda itself.</li>
+      <li>Captured variables must be effectively final — no reassignment after initial assignment.</li>
+      <li>Lambdas enable passing behavior as data — the foundation of the functional style.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════ FUNCTIONAL INTERFACES ═══════════════════ -->
+<section class="section" id="functional">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🔧</div>
+    <div>
+      <div class="section-num">§ 03</div>
+      <h2>Functional Interfaces</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>An interface with exactly one abstract method (SAM — Single Abstract Method). The <code>@FunctionalInterface</code> annotation enforces this at compile time. Default and static methods don't count toward the SAM contract.</p>
+  </div>
+
+  <h3>Built-in Functional Interfaces (java.util.function)</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Interface</th><th>Method</th><th>Input → Output</th><th>Use Case</th></tr>
+      <tr><td><code>Function&lt;T,R&gt;</code></td><td><code>R apply(T t)</code></td><td>T → R</td><td>Transform data</td></tr>
+      <tr><td><code>Predicate&lt;T&gt;</code></td><td><code>boolean test(T t)</code></td><td>T → boolean</td><td>Filter conditions</td></tr>
+      <tr><td><code>Consumer&lt;T&gt;</code></td><td><code>void accept(T t)</code></td><td>T → void</td><td>Side effects (print, save)</td></tr>
+      <tr><td><code>Supplier&lt;T&gt;</code></td><td><code>T get()</code></td><td>() → T</td><td>Lazy value creation</td></tr>
+      <tr><td><code>BiFunction&lt;T,U,R&gt;</code></td><td><code>R apply(T t, U u)</code></td><td>T,U → R</td><td>Two-input transforms</td></tr>
+      <tr><td><code>UnaryOperator&lt;T&gt;</code></td><td><code>T apply(T t)</code></td><td>T → T (same type)</td><td>Modify in place logically</td></tr>
+      <tr><td><code>BinaryOperator&lt;T&gt;</code></td><td><code>T apply(T t1, T t2)</code></td><td>T,T → T</td><td>Reduce/combine same-type</td></tr>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Composing Functional Interfaces</span></div>
+    <pre><code><span class="cm">// Function composition — critical for building pipelines</span>
+<span class="ty">Function</span>&lt;<span class="ty">String</span>, <span class="ty">String</span>&gt; trim = <span class="ty">String</span>::trim;
+<span class="ty">Function</span>&lt;<span class="ty">String</span>, <span class="ty">String</span>&gt; upper = <span class="ty">String</span>::toUpperCase;
+<span class="ty">Function</span>&lt;<span class="ty">String</span>, <span class="ty">Integer</span>&gt; length = <span class="ty">String</span>::length;
+
+<span class="cm">// andThen: f.andThen(g) = g(f(x))</span>
+<span class="ty">Function</span>&lt;<span class="ty">String</span>, <span class="ty">String</span>&gt; trimThenUpper = trim.<span class="fn">andThen</span>(upper);
+
+<span class="cm">// compose: f.compose(g) = f(g(x))  </span>
+<span class="ty">Function</span>&lt;<span class="ty">String</span>, <span class="ty">Integer</span>&gt; pipeline = length.<span class="fn">compose</span>(trimThenUpper);
+pipeline.<span class="fn">apply</span>(<span class="str">"  hello  "</span>); <span class="cm">// → 5 (trimmed "HELLO".length())</span>
+
+<span class="cm">// Predicate composition</span>
+<span class="ty">Predicate</span>&lt;<span class="ty">String</span>&gt; notEmpty = s -> !s.<span class="fn">isEmpty</span>();
+<span class="ty">Predicate</span>&lt;<span class="ty">String</span>&gt; longerThan5 = s -> s.length() > <span class="num">5</span>;
+
+<span class="ty">Predicate</span>&lt;<span class="ty">String</span>&gt; valid = notEmpty.<span class="fn">and</span>(longerThan5);
+<span class="ty">Predicate</span>&lt;<span class="ty">String</span>&gt; invalid = valid.<span class="fn">negate</span>();</code></pre>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-title">✅ Best Practice</div>
+    Always annotate custom functional interfaces with <code>@FunctionalInterface</code>. It documents intent AND causes a compile error if someone accidentally adds a second abstract method, breaking backward compatibility.
+  </div>
+
+  <div class="takeaway">
+    <div class="takeaway-title">🔑 Key Takeaways</div>
+    <ul>
+      <li>Prefer built-in <code>java.util.function</code> interfaces over creating custom ones.</li>
+      <li><code>andThen</code> and <code>compose</code> allow pipeline composition without nesting.</li>
+      <li>Primitive variants (<code>IntFunction</code>, <code>LongConsumer</code>, etc.) avoid boxing overhead.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════ STREAMS ═══════════════════ -->
+<section class="section" id="streams">
+  <div class="section-header">
+    <div class="section-icon icon-cyan">🌊</div>
+    <div>
+      <div class="section-num">§ 04</div>
+      <h2>Stream API</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>A Stream is a pipeline of elements supporting sequential and parallel aggregate operations. Streams don't store data — they process it lazily. They are single-use: once consumed, a stream cannot be reused.</p>
+  </div>
+
+  <h3>Stream Pipeline Architecture</h3>
+  <div class="diagram">
+    <div class="flow" style="flex-direction:column;gap:0.75rem">
+      <div class="flow-box orange" style="width:100%;max-width:400px">📦 Source<br><small style="color:var(--text3)">Collection, Array, Files, Generators</small></div>
+      <div class="flow-arrow" style="transform:rotate(90deg)">→</div>
+      <div class="flow-box blue" style="width:100%;max-width:400px">🔄 Intermediate Ops (LAZY)<br><small style="color:var(--text3)">filter, map, flatMap, sorted, distinct, peek, limit, skip</small></div>
+      <div class="flow-arrow" style="transform:rotate(90deg)">→</div>
+      <div class="flow-box purple" style="width:100%;max-width:400px">🔄 More Intermediate Ops...<br><small style="color:var(--text3)">Chained, not executed yet</small></div>
+      <div class="flow-arrow" style="transform:rotate(90deg)">→</div>
+      <div class="flow-box green" style="width:100%;max-width:400px">✅ Terminal Op (TRIGGERS EXECUTION)<br><small style="color:var(--text3)">collect, forEach, reduce, count, findFirst, anyMatch, toArray</small></div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Stream Creation Methods</span></div>
+    <pre><code><span class="cm">// From Collection</span>
+<span class="ty">Stream</span>&lt;<span class="ty">String</span>&gt; s1 = list.stream();
+
+<span class="cm">// From Array</span>
+<span class="ty">Stream</span>&lt;<span class="ty">String</span>&gt; s2 = <span class="ty">Arrays</span>.stream(<span class="kw">new</span> <span class="ty">String</span>[]{<span class="str">"a"</span>, <span class="str">"b"</span>});
+
+<span class="cm">// From values</span>
+<span class="ty">Stream</span>&lt;<span class="ty">Integer</span>&gt; s3 = <span class="ty">Stream</span>.<span class="fn">of</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>);
+
+<span class="cm">// Infinite — generated lazily</span>
+<span class="ty">Stream</span>&lt;<span class="ty">Integer</span>&gt; natural = <span class="ty">Stream</span>.<span class="fn">iterate</span>(<span class="num">0</span>, n -> n + <span class="num">1</span>);
+<span class="ty">Stream</span>&lt;<span class="ty">Double</span>&gt; randoms = <span class="ty">Stream</span>.<span class="fn">generate</span>(<span class="ty">Math</span>::random);
+
+<span class="cm">// Primitive streams (avoid boxing!)</span>
+<span class="ty">IntStream</span> range = <span class="ty">IntStream</span>.<span class="fn">range</span>(<span class="num">0</span>, <span class="num">10</span>);    <span class="cm">// 0..9</span>
+<span class="ty">LongStream</span> lrange = <span class="ty">LongStream</span>.<span class="fn">rangeClosed</span>(<span class="num">1</span>, <span class="num">5</span>); <span class="cm">// 1..5</span></code></pre>
+  </div>
+
+  <h3>Intermediate vs Terminal Operations</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Type</th><th>Operations</th><th>Returns</th><th>Lazy?</th></tr>
+      <tr><td><span class="tag tag-blue">Intermediate</span></td><td><code>filter, map, flatMap, sorted, distinct, peek, limit, skip</code></td><td>Stream</td><td class="td-good">✅ Yes</td></tr>
+      <tr><td><span class="tag tag-green">Terminal</span></td><td><code>collect, forEach, reduce, count, findFirst, anyMatch, toArray, min, max</code></td><td>Result / void</td><td class="td-bad">❌ Triggers all</td></tr>
+      <tr><td><span class="tag tag-orange">Short-circuit</span></td><td><code>findFirst, findAny, anyMatch, allMatch, noneMatch, limit</code></td><td>Result</td><td class="td-good">✅ Early exit</td></tr>
+    </table>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-title">⚠️ Critical: Streams are Single-Use</div>
+    Once a terminal operation is called, the stream is <strong>consumed and closed</strong>. Calling any method on it throws <code>IllegalStateException: stream has already been operated upon or closed</code>. Always re-create the stream from the source.
+  </div>
+</section>
+
+<!-- ═══════════════════ METHOD REFERENCES ═══════════════════ -->
+<section class="section" id="method-refs">
+  <div class="section-header">
+    <div class="section-icon icon-purple">::</div>
+    <div>
+      <div class="section-num">§ 05</div>
+      <h2>Method References</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>A shorthand notation for a lambda that calls a single existing method. Cleaner than lambdas when the lambda body is just a method call. Uses the <code>::</code> operator.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Type</th><th>Syntax</th><th>Lambda Equivalent</th></tr>
+      <tr><td>Static method</td><td><code>Integer::parseInt</code></td><td><code>s -> Integer.parseInt(s)</code></td></tr>
+      <tr><td>Instance (specific object)</td><td><code>obj::method</code></td><td><code>x -> obj.method(x)</code></td></tr>
+      <tr><td>Instance (arbitrary object)</td><td><code>String::toUpperCase</code></td><td><code>s -> s.toUpperCase()</code></td></tr>
+      <tr><td>Constructor</td><td><code>ArrayList::new</code></td><td><code>() -> new ArrayList()</code></td></tr>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Method References in Practice</span></div>
+    <pre><code><span class="cm">// Static method reference</span>
+list.stream().<span class="fn">map</span>(<span class="ty">Integer</span>::parseInt);        <span class="cm">// String → int</span>
+
+<span class="cm">// Arbitrary instance method (first param becomes the receiver)</span>
+list.stream().<span class="fn">map</span>(<span class="ty">String</span>::toLowerCase);     <span class="cm">// each string lowered</span>
+
+<span class="cm">// Specific instance method</span>
+<span class="ty">String</span> prefix = <span class="str">"Hello-"</span>;
+list.stream().<span class="fn">map</span>(prefix::concat);           <span class="cm">// prepend to each</span>
+
+<span class="cm">// Constructor reference — used with Supplier/Function</span>
+<span class="ty">Supplier</span>&lt;<span class="ty">List</span>&lt;<span class="ty">String</span>&gt;&gt; listFactory = <span class="ty">ArrayList</span>::<span class="kw">new</span>;
+list.stream().<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">toCollection</span>(<span class="ty">TreeSet</span>::<span class="kw">new</span>));</code></pre>
+  </div>
+
+  <div class="use-avoid">
+    <div class="use-box">
+      <h5>✅ Use When</h5>
+      <ul>
+        <li>Lambda body is a single method call</li>
+        <li>Method signature exactly matches functional interface</li>
+        <li>Improves readability over verbose lambda</li>
+      </ul>
+    </div>
+    <div class="avoid-box">
+      <h5>🚫 Avoid When</h5>
+      <ul>
+        <li>Adding any transformation around the call</li>
+        <li>Debugging — method refs are harder to step through</li>
+        <li>Team isn't familiar with <code>::</code> syntax</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ DEFAULT METHODS ═══════════════════ -->
+<section class="section" id="default-methods">
+  <div class="section-header">
+    <div class="section-icon icon-green">🔀</div>
+    <div>
+      <div class="section-num">§ 06</div>
+      <h2>Default Methods in Interfaces</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>Interface methods with a concrete implementation using the <code>default</code> keyword. Enables adding new methods to existing interfaces without breaking all implementing classes — critical for the Java Collections API evolution.</p>
+  </div>
+
+  <h3>Why It Was Introduced</h3>
+  <p>Without default methods, adding <code>stream()</code>, <code>forEach()</code>, and <code>removeIf()</code> to the <code>Collection</code> interface would have broken <strong>every library and application</strong> implementing <code>Collection</code>. Default methods solved the "interface evolution" problem elegantly.</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Default Methods</span></div>
+    <pre><code><span class="kw">interface</span> <span class="ty">Validator</span>&lt;<span class="ty">T</span>&gt; {
+    <span class="kw">boolean</span> <span class="fn">validate</span>(<span class="ty">T</span> value); <span class="cm">// abstract — must implement</span>
+
+    <span class="cm">// Default method — free to inheritors</span>
+    <span class="kw">default</span> <span class="ty">Validator</span>&lt;<span class="ty">T</span>&gt; <span class="fn">and</span>(<span class="ty">Validator</span>&lt;<span class="ty">T</span>&gt; other) {
+        <span class="kw">return</span> value -> <span class="kw">this</span>.<span class="fn">validate</span>(value) && other.<span class="fn">validate</span>(value);
+    }
+
+    <span class="kw">default</span> <span class="ty">Validator</span>&lt;<span class="ty">T</span>&gt; <span class="fn">or</span>(<span class="ty">Validator</span>&lt;<span class="ty">T</span>&gt; other) {
+        <span class="kw">return</span> value -> <span class="kw">this</span>.<span class="fn">validate</span>(value) || other.<span class="fn">validate</span>(value);
+    }
+
+    <span class="cm">// Static factory method in interface (also new in Java 8)</span>
+    <span class="kw">static</span> <span class="ty">Validator</span>&lt;<span class="ty">String</span>&gt; <span class="fn">notEmpty</span>() {
+        <span class="kw">return</span> s -> s != <span class="kw">null</span> && !s.<span class="fn">isEmpty</span>();
+    }
+}
+
+<span class="cm">// Usage: compose validators</span>
+<span class="ty">Validator</span>&lt;<span class="ty">String</span>&gt; emailValidator =
+    <span class="ty">Validator</span>.<span class="fn">notEmpty</span>().<span class="fn">and</span>(s -> s.<span class="fn">contains</span>(<span class="str">"@"</span>)).<span class="fn">and</span>(s -> s.length() &lt; <span class="num">100</span>);
+
+emailValidator.<span class="fn">validate</span>(<span class="str">"user@example.com"</span>); <span class="cm">// true</span></code></pre>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-title">⚠️ Diamond Problem</div>
+    If a class implements two interfaces with the same default method, it <strong>must override</strong> and resolve the conflict explicitly. The compiler enforces this. Use <code>InterfaceA.super.method()</code> to delegate to a specific interface's implementation.
+  </div>
+
+  <div class="takeaway">
+    <div class="takeaway-title">🔑 Key Takeaways</div>
+    <ul>
+      <li>Default methods enable non-breaking interface evolution — the "open/closed" principle at the language level.</li>
+      <li>Class implementations always win over interface defaults (class > interface in method resolution).</li>
+      <li>More specific interfaces win when two defaults exist (child interface > parent interface).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════ OPTIONAL ═══════════════════ -->
+<section class="section" id="optional">
+  <div class="section-header">
+    <div class="section-icon icon-yellow">❓</div>
+    <div>
+      <div class="section-num">§ 07</div>
+      <h2>Optional Class</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>A container object that may or may not contain a non-null value. Forces the API consumer to explicitly handle the absence case, eliminating <code>NullPointerException</code> at the API boundary.</p>
+  </div>
+
+  <h3>The Problem: Null Is Broken</h3>
+  <p>Tony Hoare called null his "billion-dollar mistake." Java's <code>Optional</code> is NOT a null replacement everywhere — it's a <strong>return type signal</strong> that says "this method might not return a value."</p>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Optional Patterns</span></div>
+    <pre><code><span class="cm">// Creation</span>
+<span class="ty">Optional</span>&lt;<span class="ty">String</span>&gt; present = <span class="ty">Optional</span>.<span class="fn">of</span>(<span class="str">"hello"</span>);         <span class="cm">// throws if null</span>
+<span class="ty">Optional</span>&lt;<span class="ty">String</span>&gt; nullable = <span class="ty">Optional</span>.<span class="fn">ofNullable</span>(value);  <span class="cm">// safe</span>
+<span class="ty">Optional</span>&lt;<span class="ty">String</span>&gt; empty = <span class="ty">Optional</span>.<span class="fn">empty</span>();
+
+<span class="cm">// ❌ Anti-pattern: isPresent + get = pointless Optional</span>
+<span class="kw">if</span> (opt.<span class="fn">isPresent</span>()) { <span class="ty">String</span> v = opt.<span class="fn">get</span>(); ... }  <span class="cm">// just use null!</span>
+
+<span class="cm">// ✅ Correct patterns</span>
+opt.<span class="fn">orElse</span>(<span class="str">"default"</span>);                              <span class="cm">// value or default</span>
+opt.<span class="fn">orElseGet</span>(() -> computeDefault());               <span class="cm">// lazy default</span>
+opt.<span class="fn">orElseThrow</span>(() -> <span class="kw">new</span> <span class="ty">NotFoundException</span>());    <span class="cm">// or throw</span>
+opt.<span class="fn">map</span>(<span class="ty">String</span>::toUpperCase);                       <span class="cm">// transform if present</span>
+opt.<span class="fn">flatMap</span>(s -> <span class="fn">findUser</span>(s));                      <span class="cm">// chain Optionals</span>
+opt.<span class="fn">filter</span>(s -> s.length() > <span class="num">5</span>);                    <span class="cm">// conditional keep</span>
+opt.<span class="fn">ifPresent</span>(s -> logger.<span class="fn">debug</span>(s));              <span class="cm">// side-effect if present</span>
+
+<span class="cm">// Real-world: chained lookups without NPE</span>
+<span class="ty">Optional</span>&lt;<span class="ty">String</span>&gt; city = <span class="fn">findUser</span>(userId)
+    .<span class="fn">flatMap</span>(<span class="ty">User</span>::getAddress)
+    .<span class="fn">map</span>(<span class="ty">Address</span>::getCity)
+    .<span class="fn">filter</span>(c -> !c.<span class="fn">isEmpty</span>());</code></pre>
+  </div>
+
+  <div class="callout danger">
+    <div class="callout-title">🚫 Do NOT Use Optional As</div>
+    Field type (doubles serialization size), method parameter (use overloads instead), collection element (use empty collection), or in performance-critical hot paths (boxing overhead).
+  </div>
+</section>
+
+<!-- ═══════════════════ DATE TIME ═══════════════════ -->
+<section class="section" id="datetime">
+  <div class="section-header">
+    <div class="section-icon icon-cyan">📅</div>
+    <div>
+      <div class="section-num">§ 08</div>
+      <h2>Date and Time API (java.time)</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>A comprehensive, immutable, thread-safe date/time API replacing the broken <code>java.util.Date</code> and <code>Calendar</code>. Designed by the creators of Joda-Time (JSR-310).</p>
+  </div>
+
+  <h3>Why The Old API Was Broken</h3>
+  <ul class="styled">
+    <li><code>Date</code> is mutable → thread-unsafe, defensive copies everywhere</li>
+    <li>Months are 0-indexed in <code>Calendar</code> → constant off-by-one bugs</li>
+    <li>No timezone-aware vs local-time separation</li>
+    <li>No concept of date-only or time-only values</li>
+  </ul>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — java.time Core Classes</span></div>
+    <pre><code><span class="cm">// LocalDate: date only, no time, no timezone</span>
+<span class="ty">LocalDate</span> today = <span class="ty">LocalDate</span>.<span class="fn">now</span>();
+<span class="ty">LocalDate</span> dob = <span class="ty">LocalDate</span>.<span class="fn">of</span>(<span class="num">1990</span>, <span class="ty">Month</span>.MARCH, <span class="num">15</span>);
+<span class="ty">Period</span> age = <span class="ty">Period</span>.<span class="fn">between</span>(dob, today);  <span class="cm">// years, months, days</span>
+
+<span class="cm">// LocalTime: time only</span>
+<span class="ty">LocalTime</span> now = <span class="ty">LocalTime</span>.<span class="fn">now</span>();
+<span class="ty">LocalTime</span> noon = <span class="ty">LocalTime</span>.<span class="fn">of</span>(<span class="num">12</span>, <span class="num">0</span>);
+
+<span class="cm">// LocalDateTime: date + time, NO timezone</span>
+<span class="ty">LocalDateTime</span> ldt = <span class="ty">LocalDateTime</span>.<span class="fn">now</span>();
+
+<span class="cm">// ZonedDateTime: date + time + timezone (USE FOR STORAGE)</span>
+<span class="ty">ZonedDateTime</span> zdt = <span class="ty">ZonedDateTime</span>.<span class="fn">now</span>(<span class="ty">ZoneId</span>.<span class="fn">of</span>(<span class="str">"Asia/Kolkata"</span>));
+
+<span class="cm">// Instant: machine time, nanoseconds from epoch (UTC)</span>
+<span class="ty">Instant</span> ts = <span class="ty">Instant</span>.<span class="fn">now</span>();
+
+<span class="cm">// Date arithmetic (immutable — returns NEW instance)</span>
+<span class="ty">LocalDate</span> nextWeek = today.<span class="fn">plusWeeks</span>(<span class="num">1</span>);
+<span class="ty">LocalDate</span> lastMonth = today.<span class="fn">minusMonths</span>(<span class="num">1</span>);
+<span class="kw">boolean</span> isLeap = today.isLeapYear();
+
+<span class="cm">// DateTimeFormatter (thread-safe!)</span>
+<span class="ty">DateTimeFormatter</span> fmt = <span class="ty">DateTimeFormatter</span>.<span class="fn">ofPattern</span>(<span class="str">"dd/MM/yyyy"</span>);
+<span class="ty">String</span> formatted = today.<span class="fn">format</span>(fmt);
+<span class="ty">LocalDate</span> parsed = <span class="ty">LocalDate</span>.<span class="fn">parse</span>(<span class="str">"15/03/2024"</span>, fmt);</code></pre>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-title">✅ Storage Rule</div>
+    Store timestamps as <code>Instant</code> (UTC epoch) in databases. Convert to <code>ZonedDateTime</code> for display using the user's timezone. Never store <code>LocalDateTime</code> — it's timezone-ambiguous.
+  </div>
+</section>
+
+<!-- ═══════════════════ FOREACH ═══════════════════ -->
+<section class="section" id="foreach">
+  <div class="section-header">
+    <div class="section-icon icon-green">🔁</div>
+    <div>
+      <div class="section-num">§ 09</div>
+      <h2>forEach() Method</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>A default method on <code>Iterable</code> (and <code>Map</code>) that accepts a <code>Consumer</code> and applies it to each element. Enables internal iteration — the collection drives traversal, not the caller.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — forEach Variants</span></div>
+    <pre><code><span class="cm">// List forEach</span>
+list.<span class="fn">forEach</span>(item -> <span class="an">System</span>.out.<span class="fn">println</span>(item));
+list.<span class="fn">forEach</span>(<span class="an">System</span>.out::println); <span class="cm">// method ref form</span>
+
+<span class="cm">// Map forEach (BiConsumer)</span>
+map.<span class="fn">forEach</span>((key, value) -> logger.<span class="fn">info</span>(<span class="str">"{} → {}"</span>, key, value));
+
+<span class="cm">// When forEach is NOT enough: need index → use IntStream</span>
+<span class="ty">IntStream</span>.<span class="fn">range</span>(<span class="num">0</span>, list.size())
+    .<span class="fn">forEach</span>(i -> <span class="an">System</span>.out.<span class="fn">printf</span>(<span class="str">"%d: %s%n"</span>, i, list.<span class="fn">get</span>(i)));
+
+<span class="cm">// NEVER: modify source collection inside forEach → ConcurrentModificationException</span>
+<span class="cm">// USE removeIf() instead:</span>
+list.<span class="fn">removeIf</span>(s -> s.<span class="fn">isEmpty</span>()); <span class="cm">// safe structural modification</span></code></pre>
+  </div>
+</section>
+
+<!-- ═══════════════════ NASHORN ═══════════════════ -->
+<section class="section" id="nashorn">
+  <div class="section-header">
+    <div class="section-icon icon-red">🕷</div>
+    <div>
+      <div class="section-num">§ 10</div>
+      <h2>Nashorn JavaScript Engine</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>A high-performance JavaScript runtime built into the JDK replacing the older Rhino engine. Allows executing JavaScript from Java and vice versa. Deprecated in Java 11, removed in Java 15.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Nashorn Usage</span></div>
+    <pre><code><span class="ty">ScriptEngine</span> engine = <span class="kw">new</span> <span class="ty">ScriptEngineManager</span>().<span class="fn">getEngineByName</span>(<span class="str">"nashorn"</span>);
+
+<span class="cm">// Execute JS</span>
+engine.<span class="fn">eval</span>(<span class="str">"print('Hello from Nashorn')"</span>);
+
+<span class="cm">// Call Java from JS</span>
+engine.<span class="fn">eval</span>(<span class="str">"var list = java.util.Arrays.asList(1,2,3); print(list)"</span>);
+
+<span class="cm">// Invoke JS function from Java</span>
+engine.<span class="fn">eval</span>(<span class="str">"function greet(name){ return 'Hello, ' + name; }"</span>);
+<span class="ty">Invocable</span> inv = (<span class="ty">Invocable</span>) engine;
+<span class="ty">String</span> result = (<span class="ty">String</span>) inv.<span class="fn">invokeFunction</span>(<span class="str">"greet"</span>, <span class="str">"World"</span>);</code></pre>
+  </div>
+
+  <div class="callout danger">
+    <div class="callout-title">⚠️ Status: Deprecated & Removed</div>
+    Nashorn is deprecated since Java 11 and removed in Java 15. For JS in Java today, use GraalVM's Polyglot API. Don't build new features on Nashorn.
+  </div>
+</section>
+
+<!-- ═══════════════════ STRINGJOINER ═══════════════════ -->
+<section class="section" id="stringjoiner">
+  <div class="section-header">
+    <div class="section-icon icon-blue">🔗</div>
+    <div>
+      <div class="section-num">§ 11</div>
+      <h2>StringJoiner</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>A utility class for constructing a string with configurable delimiter, prefix, and suffix. Powers <code>String.join()</code> and <code>Collectors.joining()</code> under the hood.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — StringJoiner</span></div>
+    <pre><code><span class="cm">// Basic</span>
+<span class="ty">StringJoiner</span> sj = <span class="kw">new</span> <span class="ty">StringJoiner</span>(<span class="str">", "</span>, <span class="str">"["</span>, <span class="str">"]"</span>);
+sj.<span class="fn">add</span>(<span class="str">"Alice"</span>).<span class="fn">add</span>(<span class="str">"Bob"</span>).<span class="fn">add</span>(<span class="str">"Charlie"</span>);
+sj.<span class="fn">toString</span>(); <span class="cm">// → "[Alice, Bob, Charlie]"</span>
+
+<span class="cm">// Empty value</span>
+<span class="ty">StringJoiner</span> empty = <span class="kw">new</span> <span class="ty">StringJoiner</span>(<span class="str">","</span>, <span class="str">"["</span>, <span class="str">"]"</span>);
+empty.<span class="fn">setEmptyValue</span>(<span class="str">"N/A"</span>);
+empty.<span class="fn">toString</span>(); <span class="cm">// → "N/A"</span>
+
+<span class="cm">// Merge two joiners</span>
+<span class="ty">StringJoiner</span> j1 = <span class="kw">new</span> <span class="ty">StringJoiner</span>(<span class="str">" | "</span>);
+<span class="ty">StringJoiner</span> j2 = <span class="kw">new</span> <span class="ty">StringJoiner</span>(<span class="str">" | "</span>);
+j1.<span class="fn">add</span>(<span class="str">"A"</span>); j2.<span class="fn">add</span>(<span class="str">"B"</span>);
+j1.<span class="fn">merge</span>(j2).<span class="fn">toString</span>(); <span class="cm">// → "A | B"</span>
+
+<span class="cm">// In streams (most common usage)</span>
+<span class="ty">String</span> csv = names.stream().<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">joining</span>(<span class="str">", "</span>));</code></pre>
+  </div>
+</section>
+
+<!-- ═══════════════════ PARALLEL STREAMS ═══════════════════ -->
+<section class="section" id="parallel">
+  <div class="section-header">
+    <div class="section-icon icon-orange">⚡</div>
+    <div>
+      <div class="section-num">§ 12</div>
+      <h2>Parallel Streams</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>A stream that uses the Fork/Join common pool to split the data source, process chunks in parallel across CPU cores, then merge results. One method call away from sequential streams.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Parallel Streams</span></div>
+    <pre><code><span class="cm">// Sequential → Parallel (just add .parallel())</span>
+<span class="kw">long</span> count = list.parallelStream()
+    .filter(s -> s.<span class="fn">startsWith</span>(<span class="str">"A"</span>))
+    .count();
+
+<span class="cm">// Convert mid-pipeline</span>
+list.stream()
+    .filter(...)
+    .parallel()    <span class="cm">// switch to parallel here</span>
+    .map(...)
+    .sequential()  <span class="cm">// switch back</span>
+    .collect(...);
+
+<span class="cm">// Controlling thread pool size (system property)</span>
+<span class="cm">// -Djava.util.concurrent.ForkJoinPool.common.parallelism=4</span>
+
+<span class="cm">// Custom pool (avoid monopolizing common pool)</span>
+<span class="ty">ForkJoinPool</span> customPool = <span class="kw">new</span> <span class="ty">ForkJoinPool</span>(<span class="num">4</span>);
+customPool.<span class="fn">submit</span>(() ->
+    list.parallelStream().<span class="fn">filter</span>(...).<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">toList</span>())
+).<span class="fn">get</span>();</code></pre>
+  </div>
+
+  <div class="callout danger">
+    <div class="callout-title">🚫 Parallel Stream Pitfalls</div>
+    <strong>Never use</strong> parallel streams with: stateful lambdas, shared mutable state, I/O operations, small datasets (&lt;10,000 elements), ordered-sensitive operations (forEachOrdered is slower than forEach). The Fork/Join overhead can make parallel slower than sequential for small/simple tasks.
+  </div>
+
+  <div class="use-avoid">
+    <div class="use-box">
+      <h5>✅ Good for Parallel</h5>
+      <ul>
+        <li>CPU-bound, stateless operations</li>
+        <li>Large datasets (&gt;100k elements)</li>
+        <li>Order doesn't matter</li>
+        <li>Independent computations per element</li>
+      </ul>
+    </div>
+    <div class="avoid-box">
+      <h5>🚫 Bad for Parallel</h5>
+      <ul>
+        <li>I/O-bound operations</li>
+        <li>Shared mutable state</li>
+        <li>Small collections</li>
+        <li>LinkedList (poor splittability)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ COLLECTORS ═══════════════════ -->
+<section class="section" id="collectors">
+  <div class="section-header">
+    <div class="section-icon icon-cyan">🗂</div>
+    <div>
+      <div class="section-num">§ 13</div>
+      <h2>Collectors API</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>Factory methods that create <code>Collector</code> instances — strategies for accumulating stream elements into result containers (lists, maps, strings, summaries, groups).</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Collectors Comprehensive Guide</span></div>
+    <pre><code><span class="cm">// ── Basic Collection ──────────────────────────────────────</span>
+<span class="ty">List</span>&lt;<span class="ty">String</span>&gt; list = stream.<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">toList</span>());
+<span class="ty">Set</span>&lt;<span class="ty">String</span>&gt; set   = stream.<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">toSet</span>());
+<span class="ty">TreeSet</span>&lt;<span class="ty">String</span>&gt; sorted = stream.<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">toCollection</span>(<span class="ty">TreeSet</span>::<span class="kw">new</span>));
+
+<span class="cm">// ── Joining ───────────────────────────────────────────────</span>
+<span class="ty">String</span> csv  = stream.<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">joining</span>(<span class="str">", "</span>));
+<span class="ty">String</span> wrap = stream.<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">joining</span>(<span class="str">", "</span>, <span class="str">"["</span>, <span class="str">"]"</span>));
+
+<span class="cm">// ── Grouping (most powerful) ──────────────────────────────</span>
+<span class="ty">Map</span>&lt;<span class="ty">Department</span>, <span class="ty">List</span>&lt;<span class="ty">Employee</span>&gt;&gt; byDept =
+    employees.<span class="fn">stream</span>().<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(<span class="ty">Employee</span>::getDept));
+
+<span class="cm">// groupingBy with downstream collector</span>
+<span class="ty">Map</span>&lt;<span class="ty">Department</span>, <span class="ty">Long</span>&gt; countByDept =
+    employees.<span class="fn">stream</span>().<span class="fn">collect</span>(
+        <span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(<span class="ty">Employee</span>::getDept, <span class="ty">Collectors</span>.<span class="fn">counting</span>())
+    );
+
+<span class="cm">// Multi-level grouping</span>
+<span class="ty">Map</span>&lt;<span class="ty">Dept</span>, <span class="ty">Map</span>&lt;<span class="ty">City</span>, <span class="ty">List</span>&lt;<span class="ty">Emp</span>&gt;&gt;&gt; nested =
+    emps.<span class="fn">stream</span>().<span class="fn">collect</span>(
+        <span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(<span class="ty">Emp</span>::getDept,
+            <span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(<span class="ty">Emp</span>::getCity))
+    );
+
+<span class="cm">// ── Partitioning ─────────────────────────────────────────</span>
+<span class="ty">Map</span>&lt;<span class="ty">Boolean</span>, <span class="ty">List</span>&lt;<span class="ty">Integer</span>&gt;&gt; evenOdd =
+    numbers.<span class="fn">stream</span>().<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">partitioningBy</span>(n -> n % <span class="num">2</span> == <span class="num">0</span>));
+<span class="cm">// {true=[2,4,6], false=[1,3,5]}</span>
+
+<span class="cm">// ── Statistics ────────────────────────────────────────────</span>
+<span class="ty">IntSummaryStatistics</span> stats = nums.<span class="fn">stream</span>()
+    .<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">summarizingInt</span>(<span class="ty">Integer</span>::intValue));
+stats.<span class="fn">getAverage</span>(); stats.<span class="fn">getMax</span>(); stats.<span class="fn">getSum</span>(); stats.<span class="fn">getCount</span>();
+
+<span class="cm">// ── toMap ─────────────────────────────────────────────────</span>
+<span class="ty">Map</span>&lt;<span class="ty">Integer</span>, <span class="ty">String</span>&gt; idToName =
+    users.<span class="fn">stream</span>().<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">toMap</span>(
+        <span class="ty">User</span>::getId,
+        <span class="ty">User</span>::getName,
+        (existing, replacement) -> existing  <span class="cm">// merge fn for duplicates</span>
+    ));</code></pre>
+  </div>
+
+  <div class="takeaway">
+    <div class="takeaway-title">🔑 Key Takeaways</div>
+    <ul>
+      <li><code>groupingBy</code> with a downstream collector is the most powerful Collectors pattern.</li>
+      <li>Always provide a merge function in <code>toMap</code> to handle potential duplicate keys.</li>
+      <li><code>Collectors.toUnmodifiableList()</code> (Java 10+) is preferred over <code>toList()</code> for defensive copies.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════ SPLITERATOR ═══════════════════ -->
+<section class="section" id="spliterator">
+  <div class="section-header">
+    <div class="section-icon icon-purple">✂</div>
+    <div>
+      <div class="section-num">§ 14</div>
+      <h2>Spliterator (Advanced)</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>An object for traversing and partitioning elements of a source. The backbone of the Stream API — every stream uses a Spliterator internally. <code>Spliterator = Iterator + splitting logic for parallel decomposition</code>.</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Custom Spliterator</span></div>
+    <pre><code><span class="cm">// Custom Spliterator for a word-range in a String</span>
+<span class="kw">class</span> <span class="ty">WordSpliterator</span> <span class="kw">implements</span> <span class="ty">Spliterator</span>&lt;<span class="ty">String</span>&gt; {
+    <span class="kw">private final</span> <span class="ty">String</span> text;
+    <span class="kw">private int</span> current;
+
+    <span class="kw">public</span> <span class="ty">WordSpliterator</span>(<span class="ty">String</span> text, <span class="kw">int</span> start) {
+        <span class="kw">this</span>.text = text; <span class="kw">this</span>.current = start;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">tryAdvance</span>(<span class="ty">Consumer</span>&lt;? <span class="kw">super</span> <span class="ty">String</span>&gt; action) {
+        <span class="kw">while</span> (current &lt; text.length() && text.<span class="fn">charAt</span>(current) == <span class="str">' '</span>) current++;
+        <span class="kw">if</span> (current == text.length()) <span class="kw">return false</span>;
+        <span class="kw">int</span> start = current;
+        <span class="kw">while</span> (current &lt; text.length() && text.<span class="fn">charAt</span>(current) != <span class="str">' '</span>) current++;
+        action.<span class="fn">accept</span>(text.<span class="fn">substring</span>(start, current));
+        <span class="kw">return true</span>;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="ty">Spliterator</span>&lt;<span class="ty">String</span>&gt; <span class="fn">trySplit</span>() {
+        <span class="kw">int</span> mid = (current + text.length()) / <span class="num">2</span>;
+        <span class="cm">// Find word boundary</span>
+        <span class="kw">while</span> (mid &lt; text.length() && text.<span class="fn">charAt</span>(mid) != <span class="str">' '</span>) mid++;
+        <span class="kw">if</span> (mid &gt;= text.length()) <span class="kw">return null</span>;
+        <span class="ty">WordSpliterator</span> split = <span class="kw">new</span> <span class="ty">WordSpliterator</span>(text.<span class="fn">substring</span>(<span class="num">0</span>, mid), current);
+        current = mid;
+        <span class="kw">return</span> split;
+    }
+
+    <span class="an">@Override</span> <span class="kw">public long</span> <span class="fn">estimateSize</span>() { <span class="kw">return</span> <span class="ty">Long</span>.MAX_VALUE; }
+    <span class="an">@Override</span> <span class="kw">public int</span> <span class="fn">characteristics</span>() { <span class="kw">return</span> ORDERED | NONNULL; }
+}
+
+<span class="cm">// Use it with StreamSupport</span>
+<span class="ty">Stream</span>&lt;<span class="ty">String</span>&gt; words = <span class="ty">StreamSupport</span>.<span class="fn">stream</span>(
+    <span class="kw">new</span> <span class="ty">WordSpliterator</span>(<span class="str">"hello world java eight"</span>, <span class="num">0</span>), <span class="kw">false</span>);
+words.<span class="fn">forEach</span>(<span class="an">System</span>.out::println);</code></pre>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">ℹ️ Spliterator Characteristics</div>
+    Key characteristics: <code>ORDERED, DISTINCT, SORTED, SIZED, NONNULL, IMMUTABLE, CONCURRENT, SUBSIZED</code>. Providing accurate characteristics lets the Stream engine optimize the pipeline — e.g., <code>SIZED</code> enables better parallel splitting.
+  </div>
+</section>
+
+<!-- ═══════════════════ COMPLETABLEFUTURE ═══════════════════ -->
+<section class="section" id="completable">
+  <div class="section-header">
+    <div class="section-icon icon-purple">🔮</div>
+    <div>
+      <div class="section-num">§ 15</div>
+      <h2>CompletableFuture</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📌 Definition</div>
+    <p>A <code>Future</code> that can be explicitly completed, composed, and chained. Enables non-blocking async programming with callbacks — replacing callback-hell with composable promise-style pipelines.</p>
+  </div>
+
+  <h3>Why It Was Needed</h3>
+  <p><code>Future.get()</code> is blocking — it defeats the purpose of async. <code>CompletableFuture</code> adds callback chaining (<code>thenApply</code>, <code>thenCompose</code>), error handling (<code>exceptionally</code>), and parallel composition (<code>allOf</code>, <code>anyOf</code>) — all non-blocking.</p>
+
+  <div class="diagram">
+    <div class="flow">
+      <div class="flow-box orange">supplyAsync()</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box blue">thenApply()<br><small>transform result</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box purple">thenCompose()<br><small>chain async</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box green">thenAccept()<br><small>consume result</small></div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — CompletableFuture Patterns</span></div>
+    <pre><code><span class="cm">// ── Basic Async ───────────────────────────────────────────</span>
+<span class="ty">CompletableFuture</span>&lt;<span class="ty">String</span>&gt; future = <span class="ty">CompletableFuture</span>
+    .<span class="fn">supplyAsync</span>(() -> <span class="fn">fetchUserFromDB</span>(userId))  <span class="cm">// runs in ForkJoin pool</span>
+    .<span class="fn">thenApply</span>(<span class="ty">User</span>::getName)                    <span class="cm">// transform (non-blocking)</span>
+    .<span class="fn">thenApply</span>(<span class="ty">String</span>::toUpperCase);
+
+<span class="cm">// ── thenCompose: flat map for async (avoids nested futures) ─</span>
+<span class="ty">CompletableFuture</span>&lt;<span class="ty">Order</span>&gt; order = <span class="ty">CompletableFuture</span>
+    .<span class="fn">supplyAsync</span>(() -> <span class="fn">getUser</span>(id))
+    .<span class="fn">thenCompose</span>(user -> <span class="fn">getOrderAsync</span>(user)); <span class="cm">// user → CF&lt;Order&gt;</span>
+
+<span class="cm">// ── thenCombine: combine two independent futures ──────────</span>
+<span class="ty">CompletableFuture</span>&lt;<span class="ty">Double</span>&gt; price = <span class="ty">CompletableFuture</span>.<span class="fn">supplyAsync</span>(() -> <span class="fn">getUSD</span>());
+<span class="ty">CompletableFuture</span>&lt;<span class="ty">Double</span>&gt; rate  = <span class="ty">CompletableFuture</span>.<span class="fn">supplyAsync</span>(() -> <span class="fn">getRate</span>());
+<span class="ty">CompletableFuture</span>&lt;<span class="ty">Double</span>&gt; inr   = price.<span class="fn">thenCombine</span>(rate, (p, r) -> p * r);
+
+<span class="cm">// ── allOf: wait for all (parallel HTTP calls) ─────────────</span>
+<span class="ty">CompletableFuture</span>&lt;<span class="ty">String</span>&gt; c1 = <span class="ty">CompletableFuture</span>.<span class="fn">supplyAsync</span>(() -> <span class="fn">callServiceA</span>());
+<span class="ty">CompletableFuture</span>&lt;<span class="ty">String</span>&gt; c2 = <span class="ty">CompletableFuture</span>.<span class="fn">supplyAsync</span>(() -> <span class="fn">callServiceB</span>());
+<span class="ty">CompletableFuture</span>&lt;<span class="ty">String</span>&gt; c3 = <span class="ty">CompletableFuture</span>.<span class="fn">supplyAsync</span>(() -> <span class="fn">callServiceC</span>());
+
+<span class="ty">CompletableFuture</span>.<span class="fn">allOf</span>(c1, c2, c3)
+    .<span class="fn">thenRun</span>(() -> {
+        <span class="ty">String</span> a = c1.<span class="fn">join</span>(), b = c2.<span class="fn">join</span>(), c = c3.<span class="fn">join</span>();
+        <span class="fn">aggregate</span>(a, b, c);
+    });
+
+<span class="cm">// ── Error handling ────────────────────────────────────────</span>
+<span class="ty">CompletableFuture</span>&lt;<span class="ty">User</span>&gt; safe = <span class="ty">CompletableFuture</span>
+    .<span class="fn">supplyAsync</span>(() -> <span class="fn">riskyCall</span>())
+    .<span class="fn">exceptionally</span>(ex -> {
+        logger.<span class="fn">error</span>(<span class="str">"Failed: {}"</span>, ex.getMessage());
+        <span class="kw">return</span> <span class="ty">User</span>.<span class="fn">defaultUser</span>();  <span class="cm">// fallback value</span>
+    })
+    .<span class="fn">handle</span>((result, ex) -> {  <span class="cm">// handle both success and failure</span>
+        <span class="kw">if</span> (ex != <span class="kw">null</span>) <span class="kw">return</span> <span class="ty">User</span>.<span class="fn">defaultUser</span>();
+        <span class="kw">return</span> result;
+    });
+
+<span class="cm">// ── Custom Executor (critical for production!) ────────────</span>
+<span class="ty">ExecutorService</span> executor = <span class="ty">Executors</span>.<span class="fn">newFixedThreadPool</span>(<span class="num">10</span>);
+<span class="ty">CompletableFuture</span>.<span class="fn">supplyAsync</span>(() -> <span class="fn">dbQuery</span>(), executor)
+    .<span class="fn">thenApplyAsync</span>(<span class="ty">User</span>::process, executor);</code></pre>
+  </div>
+
+  <div class="callout danger">
+    <div class="callout-title">🚫 Production Warning: Always Use Custom Executor</div>
+    By default, <code>supplyAsync</code> uses the common ForkJoin pool (shared with parallel streams). For I/O operations, <strong>always provide a custom executor</strong> to avoid starving the common pool and deadlocking other parts of your application.
+  </div>
+
+  <div class="takeaway">
+    <div class="takeaway-title">🔑 Key Takeaways</div>
+    <ul>
+      <li><code>thenApply</code> = synchronous transform; <code>thenApplyAsync</code> = async transform on executor.</li>
+      <li><code>thenCompose</code> = flatMap for futures — prevents <code>CompletableFuture&lt;CompletableFuture&lt;T&gt;&gt;</code>.</li>
+      <li><code>exceptionally</code> handles only errors; <code>handle</code> handles both success and error paths.</li>
+      <li>Always provide custom <code>ExecutorService</code> for I/O-bound async tasks.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════ STREAM MASTER SECTION ═══════════════════ -->
+<section class="section" id="stream-master">
+  <div class="section-header">
+    <div class="section-icon icon-cyan">🌊</div>
+    <div>
+      <div class="section-num">§ 16</div>
+      <h2>Stream API — Master Deep Dive</h2>
+    </div>
+  </div>
+
+  <div class="callout purple">
+    <div class="callout-title">🧠 Internal Architecture</div>
+    Streams are built on top of <strong>Spliterators</strong> (data source) + a <strong>pipeline of operations</strong> stored as a linked list of <code>StatelessOp</code> / <code>StatefulOp</code> stages. Operations are fused where possible (loop fusion). Stateful ops (sorted, distinct) break fusion boundaries.
+  </div>
+
+  <h3>Lazy Evaluation — The Core Principle</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Lazy Evaluation Proof</span></div>
+    <pre><code><span class="ty">List</span>&lt;<span class="ty">String</span>&gt; names = <span class="an">Arrays</span>.<span class="fn">asList</span>(<span class="str">"Alice"</span>, <span class="str">"Bob"</span>, <span class="str">"Charlie"</span>, <span class="str">"Dave"</span>);
+
+<span class="cm">// This executes ZERO operations — no terminal op yet</span>
+<span class="ty">Stream</span>&lt;<span class="ty">String</span>&gt; stream = names.stream()
+    .<span class="fn">filter</span>(name -> { <span class="an">System</span>.out.<span class="fn">println</span>(<span class="str">"filter: "</span> + name); <span class="kw">return</span> <span class="kw">true</span>; })
+    .<span class="fn">map</span>(name -> { <span class="an">System</span>.out.<span class="fn">println</span>(<span class="str">"map: "</span> + name); <span class="kw">return</span> name.<span class="fn">toUpperCase</span>(); });
+
+<span class="cm">// Nothing printed yet!</span>
+
+<span class="cm">// SHORT-CIRCUIT: findFirst stops after first match</span>
+<span class="ty">Optional</span>&lt;<span class="ty">String</span>&gt; first = names.stream()
+    .<span class="fn">filter</span>(name -> { <span class="an">System</span>.out.<span class="fn">println</span>(<span class="str">"checking: "</span> + name); <span class="kw">return</span> name.startsWith(<span class="str">"C"</span>); })
+    .<span class="fn">findFirst</span>();
+<span class="cm">// Prints: "checking: Alice", "checking: Bob", "checking: Charlie" then STOPS</span></code></pre>
+  </div>
+
+  <h3>6 Examples: Easy to Hard</h3>
+
+  <div class="collapsible open">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🟢 Easy 1 — Filter, Map, Collect</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-easy">Easy</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// Find all adult users' names, sorted alphabetically</span>
+<span class="ty">List</span>&lt;<span class="ty">String</span>&gt; adultNames = users.stream()
+    .filter(u -> u.<span class="fn">getAge</span>() >= <span class="num">18</span>)
+    .map(<span class="ty">User</span>::getName)
+    .sorted()
+    .collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>());</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🟢 Easy 2 — Statistics with Primitive Streams</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-easy">Easy</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// Compute salary statistics — avoid boxing with mapToInt</span>
+<span class="ty">IntSummaryStatistics</span> stats = employees.stream()
+    .<span class="fn">mapToInt</span>(<span class="ty">Employee</span>::getSalary)
+    .<span class="fn">summaryStatistics</span>();
+
+<span class="an">System</span>.out.<span class="fn">printf</span>(<span class="str">"Min=%d Max=%d Avg=%.1f Total=%d Count=%d%n"</span>,
+    stats.<span class="fn">getMin</span>(), stats.<span class="fn">getMax</span>(), stats.<span class="fn">getAverage</span>(),
+    stats.<span class="fn">getSum</span>(), stats.<span class="fn">getCount</span>());</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🟡 Medium 1 — FlatMap for Nested Collections</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-med">Medium</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// Each Order has List&lt;Item&gt; — get all distinct products across all orders</span>
+<span class="ty">List</span>&lt;<span class="ty">String</span>&gt; products = orders.stream()
+    .<span class="fn">flatMap</span>(order -> order.<span class="fn">getItems</span>().stream())  <span class="cm">// Stream&lt;Order&gt; → Stream&lt;Item&gt;</span>
+    .<span class="fn">map</span>(<span class="ty">Item</span>::getProductName)
+    .<span class="fn">distinct</span>()
+    .sorted()
+    .collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>());
+
+<span class="cm">// Understanding flatMap:</span>
+<span class="cm">// map:     Stream&lt;Order&gt; → Stream&lt;List&lt;Item&gt;&gt;  (nested!)</span>
+<span class="cm">// flatMap: Stream&lt;Order&gt; → Stream&lt;Item&gt;         (flattened!)</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🟡 Medium 2 — Custom Reduce Operation</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-med">Medium</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// reduce: fold a stream into a single value</span>
+<span class="ty">Optional</span>&lt;<span class="ty">Integer</span>&gt; max = numbers.stream()
+    .<span class="fn">reduce</span>((a, b) -> a > b ? a : b);  <span class="cm">// no identity → Optional</span>
+
+<span class="kw">int</span> sum = numbers.stream()
+    .<span class="fn">reduce</span>(<span class="num">0</span>, <span class="ty">Integer</span>::sum);         <span class="cm">// identity=0, accumulator</span>
+
+<span class="cm">// reduce with 3 args (combiner for parallel)</span>
+<span class="kw">int</span> total = numbers.parallelStream()
+    .<span class="fn">reduce</span>(
+        <span class="num">0</span>,                              <span class="cm">// identity</span>
+        <span class="ty">Integer</span>::sum,                   <span class="cm">// accumulator (per thread)</span>
+        <span class="ty">Integer</span>::sum                    <span class="cm">// combiner (merge thread results)</span>
+    );</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🔴 Hard 1 — Multi-level Grouping & Downstream Collectors</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-hard">Hard</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// Group employees by department, then find highest paid in each dept</span>
+<span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Optional</span>&lt;<span class="ty">Employee</span>&gt;&gt; topByDept = employees.stream()
+    .<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(
+        <span class="ty">Employee</span>::getDept,
+        <span class="ty">Collectors</span>.<span class="fn">maxBy</span>(<span class="ty">Comparator</span>.<span class="fn">comparingInt</span>(<span class="ty">Employee</span>::getSalary))
+    ));
+
+<span class="cm">// Dept → {count, avgSalary} — custom collector composition</span>
+<span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">DoubleSummaryStatistics</span>&gt; salaryStats = employees.stream()
+    .<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(
+        <span class="ty">Employee</span>::getDept,
+        <span class="ty">Collectors</span>.<span class="fn">summarizingDouble</span>(<span class="ty">Employee</span>::getSalary)
+    ));
+
+<span class="cm">// The most complex: Dept → City → [names] sorted</span>
+<span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">List</span>&lt;<span class="ty">String</span>&gt;&gt;&gt; result = employees.stream()
+    .<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(
+        <span class="ty">Employee</span>::getDept,
+        <span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(
+            <span class="ty">Employee</span>::getCity,
+            <span class="ty">Collectors</span>.<span class="fn">mapping</span>(
+                <span class="ty">Employee</span>::getName,
+                <span class="ty">Collectors</span>.<span class="fn">toList</span>()
+            )
+        )
+    ));</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🔴 Hard 2 — Log Processing Pipeline</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-hard">Hard</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// Real-world: Process a large log file, find top 5 IPs with errors</span>
+<span class="kw">try</span> (<span class="ty">Stream</span>&lt;<span class="ty">String</span>&gt; lines = <span class="ty">Files</span>.<span class="fn">lines</span>(<span class="ty">Paths</span>.<span class="fn">get</span>(<span class="str">"/var/log/access.log"</span>))) {
+    
+    <span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Long</span>&gt; top5ErrorIPs = lines
+        .filter(line -> line.<span class="fn">contains</span>(<span class="str">" 5"</span>))              <span class="cm">// 5xx status codes</span>
+        .map(line -> line.<span class="fn">split</span>(<span class="str">" "</span>)[<span class="num">0</span>])                  <span class="cm">// extract IP (first token)</span>
+        .collect(<span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(ip -> ip, <span class="ty">Collectors</span>.<span class="fn">counting</span>()))
+        .entrySet().stream()
+        .sorted(<span class="ty">Map</span>.<span class="ty">Entry</span>.&lt;<span class="ty">String</span>, <span class="ty">Long</span>&gt;<span class="fn">comparingByValue</span>().<span class="fn">reversed</span>())
+        .limit(<span class="num">5</span>)
+        .collect(<span class="ty">Collectors</span>.<span class="fn">toMap</span>(
+            <span class="ty">Map</span>.<span class="ty">Entry</span>::getKey,
+            <span class="ty">Map</span>.<span class="ty">Entry</span>::getValue,
+            (a, b) -> a,
+            <span class="ty">LinkedHashMap</span>::<span class="kw">new</span>  <span class="cm">// preserve insertion order</span>
+        ));
+} <span class="cm">// auto-close stream</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-title">⚠️ Stream Performance Traps</div>
+    <strong>1.</strong> <code>sorted()</code> is stateful — buffers all elements, breaking lazy evaluation.<br>
+    <strong>2.</strong> <code>distinct()</code> maintains a HashSet internally — O(n) space.<br>
+    <strong>3.</strong> Boxing in streams: prefer <code>mapToInt</code> over <code>map(Integer::valueOf)</code>.<br>
+    <strong>4.</strong> Never use <code>count()</code> after <code>filter()</code> — use <code>Stream.of(...).filter(...).count()</code>, not <code>collect(toList()).size()</code>.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════ REAL WORLD EXAMPLES ═══════════════════ -->
+<section class="section" id="realworld">
+  <div class="section-header">
+    <div class="section-icon icon-orange">🏗</div>
+    <div>
+      <div class="section-num">§ 17</div>
+      <h2>Real-World Examples</h2>
+    </div>
+  </div>
+
+  <div class="collapsible open">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🟢 Easy 1 — Email Validation with Predicate Composition</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-easy">Easy</span>
+      <div class="code-block">
+        <pre><code><span class="ty">Predicate</span>&lt;<span class="ty">String</span>&gt; notNull    = Objects::nonNull;
+<span class="ty">Predicate</span>&lt;<span class="ty">String</span>&gt; notEmpty   = s -> !s.<span class="fn">isBlank</span>();
+<span class="ty">Predicate</span>&lt;<span class="ty">String</span>&gt; hasAt      = s -> s.<span class="fn">contains</span>(<span class="str">"@"</span>);
+<span class="ty">Predicate</span>&lt;<span class="ty">String</span>&gt; validLen   = s -> s.length() &lt; <span class="num">255</span>;
+
+<span class="ty">Predicate</span>&lt;<span class="ty">String</span>&gt; isValidEmail = notNull.<span class="fn">and</span>(notEmpty).<span class="fn">and</span>(hasAt).<span class="fn">and</span>(validLen);
+
+<span class="ty">List</span>&lt;<span class="ty">String</span>&gt; validEmails = rawEmails.stream()
+    .<span class="fn">filter</span>(isValidEmail)
+    .collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>());</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🟢 Easy 2 — Invoice Total Calculation</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-easy">Easy</span>
+      <div class="code-block">
+        <pre><code><span class="kw">record</span> <span class="ty">LineItem</span>(<span class="ty">String</span> name, <span class="kw">int</span> qty, <span class="kw">double</span> unitPrice) {
+    <span class="kw">double</span> <span class="fn">subtotal</span>() { <span class="kw">return</span> qty * unitPrice; }
+}
+
+<span class="ty">List</span>&lt;<span class="ty">LineItem</span>&gt; cart = <span class="ty">List</span>.<span class="fn">of</span>(
+    <span class="kw">new</span> <span class="ty">LineItem</span>(<span class="str">"Laptop"</span>, <span class="num">1</span>, <span class="num">75000</span>),
+    <span class="kw">new</span> <span class="ty">LineItem</span>(<span class="str">"Mouse"</span>, <span class="num">2</span>, <span class="num">1500</span>),
+    <span class="kw">new</span> <span class="ty">LineItem</span>(<span class="str">"Keyboard"</span>, <span class="num">1</span>, <span class="num">3000</span>)
+);
+
+<span class="kw">double</span> total = cart.stream()
+    .<span class="fn">mapToDouble</span>(<span class="ty">LineItem</span>::subtotal)
+    .sum();
+<span class="cm">// → 81000.0</span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🟡 Medium 1 — Order Processing Pipeline</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-med">Medium</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// E-commerce: Find top 3 customers by total spend in Q4 2024</span>
+<span class="ty">LocalDate</span> q4Start = <span class="ty">LocalDate</span>.<span class="fn">of</span>(<span class="num">2024</span>, <span class="num">10</span>, <span class="num">1</span>);
+<span class="ty">LocalDate</span> q4End   = <span class="ty">LocalDate</span>.<span class="fn">of</span>(<span class="num">2024</span>, <span class="num">12</span>, <span class="num">31</span>);
+
+<span class="ty">List</span>&lt;<span class="ty">String</span>&gt; top3 = orders.stream()
+    .filter(o -> !o.<span class="fn">getDate</span>().<span class="fn">isBefore</span>(q4Start))
+    .filter(o -> !o.<span class="fn">getDate</span>().<span class="fn">isAfter</span>(q4End))
+    .filter(o -> o.<span class="fn">getStatus</span>() == <span class="ty">OrderStatus</span>.DELIVERED)
+    .collect(<span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(
+        <span class="ty">Order</span>::getCustomerId,
+        <span class="ty">Collectors</span>.<span class="fn">summingDouble</span>(<span class="ty">Order</span>::getAmount)
+    ))
+    .entrySet().stream()
+    .sorted(<span class="ty">Map</span>.<span class="ty">Entry</span>.&lt;<span class="ty">String</span>, <span class="ty">Double</span>&gt;<span class="fn">comparingByValue</span>().<span class="fn">reversed</span>())
+    .limit(<span class="num">3</span>)
+    .map(<span class="ty">Map</span>.<span class="ty">Entry</span>::getKey)
+    .collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>());</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🟡 Medium 2 — Log Filtering with Date/Time</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-med">Medium</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// Parse and filter error logs from the last hour</span>
+<span class="ty">DateTimeFormatter</span> logFmt = <span class="ty">DateTimeFormatter</span>.<span class="fn">ofPattern</span>(<span class="str">"yyyy-MM-dd HH:mm:ss"</span>);
+<span class="ty">LocalDateTime</span> oneHourAgo = <span class="ty">LocalDateTime</span>.<span class="fn">now</span>().<span class="fn">minusHours</span>(<span class="num">1</span>);
+
+<span class="ty">List</span>&lt;<span class="ty">LogEntry</span>&gt; recentErrors = rawLogs.stream()
+    .map(line -> <span class="kw">new</span> <span class="ty">LogEntry</span>(line))
+    .filter(e -> e.<span class="fn">getLevel</span>() == <span class="ty">Level</span>.ERROR)
+    .filter(e -> e.<span class="fn">getTimestamp</span>().<span class="fn">isAfter</span>(oneHourAgo))
+    .sorted(<span class="ty">Comparator</span>.<span class="fn">comparing</span>(<span class="ty">LogEntry</span>::getTimestamp).<span class="fn">reversed</span>())
+    .collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>());</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🔴 Hard 1 — Async API Aggregation with CompletableFuture</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-hard">Hard</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// Fetch user + orders + recommendations IN PARALLEL, merge into UserProfile</span>
+<span class="ty">ExecutorService</span> exec = <span class="ty">Executors</span>.<span class="fn">newCachedThreadPool</span>();
+
+<span class="kw">public</span> <span class="ty">CompletableFuture</span>&lt;<span class="ty">UserProfile</span>&gt; <span class="fn">buildProfile</span>(<span class="ty">String</span> userId) {
+    <span class="ty">CompletableFuture</span>&lt;<span class="ty">User</span>&gt; userFuture =
+        <span class="ty">CompletableFuture</span>.<span class="fn">supplyAsync</span>(() -> userService.<span class="fn">findById</span>(userId), exec);
+
+    <span class="ty">CompletableFuture</span>&lt;<span class="ty">List</span>&lt;<span class="ty">Order</span>&gt;&gt; ordersFuture =
+        <span class="ty">CompletableFuture</span>.<span class="fn">supplyAsync</span>(() -> orderService.<span class="fn">findByUser</span>(userId), exec);
+
+    <span class="ty">CompletableFuture</span>&lt;<span class="ty">List</span>&lt;<span class="ty">Product</span>&gt;&gt; recsFuture =
+        <span class="ty">CompletableFuture</span>.<span class="fn">supplyAsync</span>(() -> mlService.<span class="fn">getRecos</span>(userId), exec);
+
+    <span class="kw">return</span> <span class="ty">CompletableFuture</span>
+        .<span class="fn">allOf</span>(userFuture, ordersFuture, recsFuture)
+        .<span class="fn">thenApply</span>(v -> <span class="ty">UserProfile</span>.<span class="fn">builder</span>()
+            .user(userFuture.<span class="fn">join</span>())
+            .orders(ordersFuture.<span class="fn">join</span>())
+            .recommendations(recsFuture.<span class="fn">join</span>())
+            .build())
+        .<span class="fn">exceptionally</span>(ex -> {
+            logger.<span class="fn">error</span>(<span class="str">"Profile build failed for {}"</span>, userId, ex);
+            <span class="kw">return</span> <span class="ty">UserProfile</span>.<span class="fn">minimal</span>(userId); <span class="cm">// graceful degradation</span>
+        });
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+      <h4>🔴 Hard 2 — Transactional Batch Processing</h4>
+      <span class="collapsible-arrow">▼</span>
+    </div>
+    <div class="collapsible-body">
+      <span class="diff diff-hard">Hard</span>
+      <div class="code-block">
+        <pre><code><span class="cm">// Process payment batch: partition into successful/failed, retry failures</span>
+<span class="ty">Map</span>&lt;<span class="ty">Boolean</span>, <span class="ty">List</span>&lt;<span class="ty">Payment</span>&gt;&gt; results = pendingPayments.stream()
+    .collect(<span class="ty">Collectors</span>.<span class="fn">partitioningBy</span>(<span class="kw">this</span>::<span class="fn">processPayment</span>));
+
+<span class="ty">List</span>&lt;<span class="ty">Payment</span>&gt; succeeded = results.<span class="fn">get</span>(<span class="kw">true</span>);
+<span class="ty">List</span>&lt;<span class="ty">Payment</span>&gt; failed    = results.<span class="fn">get</span>(<span class="kw">false</span>);
+
+<span class="cm">// Retry failed payments up to 3 times with exponential backoff</span>
+<span class="ty">List</span>&lt;<span class="ty">CompletableFuture</span>&lt;<span class="ty">PaymentResult</span>&gt;&gt; retries = failed.stream()
+    .map(payment -> <span class="ty">CompletableFuture</span>
+        .<span class="fn">supplyAsync</span>(() -> <span class="fn">retryWithBackoff</span>(payment, <span class="num">3</span>), exec)
+        .<span class="fn">exceptionally</span>(ex -> <span class="ty">PaymentResult</span>.<span class="fn">failed</span>(payment, ex.getMessage())))
+    .collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>());
+
+<span class="cm">// Wait for all retries and collect results</span>
+<span class="ty">List</span>&lt;<span class="ty">PaymentResult</span>&gt; retryResults = retries.stream()
+    .map(<span class="ty">CompletableFuture</span>::join)
+    .collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>());
+
+<span class="cm">// Audit log: group by result code</span>
+<span class="ty">Map</span>&lt;<span class="ty">String</span>, <span class="ty">Long</span>&gt; auditSummary = retryResults.stream()
+    .collect(<span class="ty">Collectors</span>.<span class="fn">groupingBy</span>(<span class="ty">PaymentResult</span>::getCode, <span class="ty">Collectors</span>.<span class="fn">counting</span>()));</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════ PERFORMANCE ═══════════════════ -->
+<section class="section" id="performance">
+  <div class="section-header">
+    <div class="section-icon icon-red">📊</div>
+    <div>
+      <div class="section-num">§ 18</div>
+      <h2>Performance & Memory Analysis</h2>
+    </div>
+  </div>
+
+  <h3>Streams vs Traditional Loops</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Scenario</th><th>For Loop</th><th>Stream</th><th>Winner</th></tr>
+      <tr><td>Small collection (&lt;1000)</td><td class="td-good">Faster (no overhead)</td><td class="td-ok">Slightly slower</td><td>🔵 Loop</td></tr>
+      <tr><td>Large collection (1M+)</td><td class="td-ok">Good</td><td class="td-good">Comparable, cleaner</td><td>🟡 Tie</td></tr>
+      <tr><td>Parallel large CPU-bound</td><td class="td-bad">Single-threaded</td><td class="td-good">Parallel wins 4x</td><td>🟠 Parallel Stream</td></tr>
+      <tr><td>Primitive arrays</td><td class="td-good">No boxing</td><td class="td-ok">Use IntStream to match</td><td>🔵 Loop or IntStream</td></tr>
+      <tr><td>Early exit needed</td><td class="td-good">break; return;</td><td class="td-good">findFirst/anyMatch</td><td>🟡 Tie</td></tr>
+      <tr><td>Readability</td><td class="td-bad">Verbose</td><td class="td-good">Declarative, clean</td><td>🟠 Stream</td></tr>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Lambda & Boxing Overhead</span></div>
+    <pre><code><span class="cm">// ❌ BAD: boxes every int to Integer — heap pressure</span>
+<span class="ty">Stream</span>&lt;<span class="ty">Integer</span>&gt; stream = <span class="ty">IntStream</span>.<span class="fn">range</span>(<span class="num">0</span>, <span class="num">1_000_000</span>).boxed();
+<span class="kw">long</span> sum = stream.<span class="fn">mapToLong</span>(<span class="ty">Integer</span>::longValue).sum(); <span class="cm">// double conversion</span>
+
+<span class="cm">// ✅ GOOD: stays primitive throughout</span>
+<span class="kw">long</span> sum = <span class="ty">LongStream</span>.<span class="fn">range</span>(<span class="num">0</span>, <span class="num">1_000_000</span>).sum();
+
+<span class="cm">// Lambda overhead: captured variables vs stateless</span>
+<span class="cm">// Stateless lambda → reused instance (singleton-like)</span>
+list.stream().<span class="fn">filter</span>(<span class="ty">String</span>::isEmpty); <span class="cm">// no allocation per invocation</span>
+
+<span class="cm">// Capturing lambda → new instance per invocation</span>
+<span class="ty">String</span> prefix = <span class="str">"test"</span>;
+list.stream().<span class="fn">filter</span>(s -> s.<span class="fn">startsWith</span>(prefix)); <span class="cm">// allocates closure object</span></code></pre>
+  </div>
+
+  <h3>Parallel Stream Pitfalls</h3>
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Parallel Stream Anti-patterns</span></div>
+    <pre><code><span class="cm">// ❌ RACE CONDITION: shared mutable state</span>
+<span class="ty">List</span>&lt;<span class="ty">Integer</span>&gt; shared = <span class="kw">new</span> <span class="ty">ArrayList</span>&lt;&gt;();
+numbers.parallelStream().<span class="fn">forEach</span>(shared::add); <span class="cm">// DATA RACE!</span>
+
+<span class="cm">// ✅ CORRECT: use thread-safe collector</span>
+<span class="ty">List</span>&lt;<span class="ty">Integer</span>&gt; safe = numbers.parallelStream()
+    .collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>()); <span class="cm">// thread-safe by design</span>
+
+<span class="cm">// ❌ DEADLOCK RISK: blocking I/O in common pool</span>
+numbers.parallelStream().<span class="fn">forEach</span>(n -> {
+    restTemplate.<span class="fn">getForObject</span>(<span class="str">"http://api..."</span>, <span class="ty">String</span>.class); <span class="cm">// BLOCKS pool!</span>
+});
+
+<span class="cm">// ✅ CORRECT: use custom executor for I/O</span>
+<span class="ty">ExecutorService</span> pool = <span class="ty">Executors</span>.<span class="fn">newFixedThreadPool</span>(<span class="num">20</span>);
+numbers.stream()
+    .map(n -> <span class="ty">CompletableFuture</span>.<span class="fn">supplyAsync</span>(() -> <span class="fn">callApi</span>(n), pool))
+    .map(<span class="ty">CompletableFuture</span>::join)
+    .collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>());</code></pre>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">ℹ️ GC Impact</div>
+    Streams create intermediate objects (spliterators, pipeline nodes, closures). For hot paths (&gt;10M calls/sec), measure with JMH. Prefer imperative loops for tight loops in low-latency systems. The overhead is negligible in most business applications.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════ INTERVIEWS ═══════════════════ -->
+<section class="section" id="interviews">
+  <div class="section-header">
+    <div class="section-icon icon-orange">🎯</div>
+    <div>
+      <div class="section-num">§ 19</div>
+      <h2>Interview Preparation — 30+ Q&A</h2>
+    </div>
+  </div>
+
+  <div class="qa-item open">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q1</span>What is the difference between a lambda expression and an anonymous inner class?</div>
+    <div class="qa-a">Lambdas use <code>invokedynamic</code> and don't create a separate .class file. Anonymous inner classes create a new class file. Lambdas don't have their own <code>this</code> (refers to enclosing class); anonymous classes have their own <code>this</code>. Lambdas can only implement functional interfaces; anonymous classes can implement any interface or extend a class. Lambdas are more memory-efficient (no per-instance overhead from anon class).</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q2</span>What is an effectively final variable and why is it required for lambda capture?</div>
+    <div class="qa-a">A variable is effectively final if it's never reassigned after initialization (even without the <code>final</code> keyword). Required because lambdas are closures that capture the variable value at creation time. If the variable could change, it would create a concurrency hazard — the lambda might execute in a different thread after the variable's scope has ended. The JVM needs to guarantee the captured value won't change.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q3</span>Explain the difference between map() and flatMap() in streams.</div>
+    <div class="qa-a"><code>map()</code>: 1-to-1 transform. Each element produces exactly one output element. <code>Stream&lt;T&gt; → Stream&lt;R&gt;</code>. <code>flatMap()</code>: 1-to-many transform followed by flattening. Each element produces a Stream, all streams are concatenated. <code>Stream&lt;T&gt; → Stream&lt;Stream&lt;R&gt;&gt; → Stream&lt;R&gt;</code>. Use flatMap when you'd otherwise get nested collections (e.g., each Order has multiple Items — you want a flat Stream&lt;Item&gt;, not Stream&lt;List&lt;Item&gt;&gt;).</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q4</span>When would you NOT use parallel streams?</div>
+    <div class="qa-a">Avoid parallel streams when: (1) Dataset is small (&lt;10k elements — overhead outweighs benefit); (2) Order matters and operations aren't commutative; (3) Operations involve I/O (blocks the shared ForkJoin pool); (4) Operations mutate shared state (race conditions); (5) Source has poor splittability (LinkedList); (6) Operations are cheap (thread coordination overhead dominates); (7) You're in a server container (Tomcat already manages threads — stealing from common pool is dangerous).</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q5</span>What is the difference between thenApply(), thenCompose(), and thenCombine() in CompletableFuture?</div>
+    <div class="qa-a"><code>thenApply(fn)</code>: Like <code>map</code> — transforms the result synchronously when done. Returns <code>CF&lt;R&gt;</code>. <code>thenCompose(fn)</code>: Like <code>flatMap</code> — fn returns a <code>CF&lt;R&gt;</code>, and it flattens to avoid <code>CF&lt;CF&lt;R&gt;&gt;</code>. Use for chaining async operations. <code>thenCombine(cf2, fn)</code>: Combines results of TWO independent futures when both complete. Use when you have parallel independent async tasks whose results need to be merged.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q6</span>What is the contract of a Functional Interface? Can it have default methods?</div>
+    <div class="qa-a">A functional interface must have exactly ONE abstract method (SAM). It CAN have any number of default and static methods. It CAN override methods from Object (equals, hashCode, toString) without counting as abstract methods. <code>@FunctionalInterface</code> is optional but recommended — it enforces the contract at compile time and documents intent.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q7</span>How does Optional.orElse() differ from Optional.orElseGet()?</div>
+    <div class="qa-a"><code>orElse(value)</code>: The default value is evaluated EAGERLY — computed before Optional is checked. Even if the Optional has a value, the default expression runs. <code>orElseGet(supplier)</code>: The supplier is evaluated LAZILY — only called when the Optional is empty. Always prefer <code>orElseGet</code> when the default involves computation, DB call, or object creation, to avoid unnecessary work.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q8</span>What are the characteristics of a Spliterator and why do they matter?</div>
+    <div class="qa-a">Characteristics are bitwise flags that describe the data source: <code>ORDERED, DISTINCT, SORTED, SIZED, NONNULL, IMMUTABLE, CONCURRENT, SUBSIZED</code>. They matter because the Stream engine uses them to optimize the pipeline — e.g., knowing <code>DISTINCT</code> skips adding a HashSet in <code>distinct()</code>; <code>SIZED</code> enables better parallel partitioning; <code>SORTED</code> can skip re-sorting. Providing inaccurate characteristics causes incorrect results.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q9</span>Explain the diamond problem with default methods and how Java resolves it.</div>
+    <div class="qa-a">If class C implements interfaces A and B, both with the same default method, Java forces C to override the method (compile error if not). Resolution rules: (1) Class wins over interface; (2) Most specific interface wins (child interface beats parent interface); (3) If still ambiguous, explicit override required using <code>A.super.method()</code> or <code>B.super.method()</code> syntax.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q10</span>What is method reference and what are its 4 types?</div>
+    <div class="qa-a">(1) Static: <code>ClassName::staticMethod</code> — equivalent to <code>x -> ClassName.staticMethod(x)</code>. (2) Instance (specific object): <code>instance::method</code> — equivalent to <code>x -> instance.method(x)</code>. (3) Instance (arbitrary object): <code>ClassName::instanceMethod</code> — equivalent to <code>(x, y) -> x.instanceMethod(y)</code>; first param becomes receiver. (4) Constructor: <code>ClassName::new</code> — equivalent to <code>() -> new ClassName()</code>.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q11</span>What is the difference between Collectors.toList() and Collectors.toUnmodifiableList()?</div>
+    <div class="qa-a"><code>toList()</code> returns a mutable List — you can add/remove elements. <code>toUnmodifiableList()</code> (Java 10+) returns an unmodifiable view — any structural modification throws <code>UnsupportedOperationException</code>. Both allow null elements. Note: In Java 16+, <code>Stream.toList()</code> directly returns an unmodifiable, null-forbidding list.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q12</span>How does Stream.reduce() work? What are the identity and combiner arguments?</div>
+    <div class="qa-a"><code>reduce(identity, accumulator)</code>: Identity is the initial value (must be neutral for the operation — 0 for sum, 1 for product, empty string for concat). Accumulator combines identity with each element. <code>reduce(identity, accumulator, combiner)</code>: The combiner merges partial results in parallel processing — it combines results from different threads. The combiner must be compatible with the accumulator.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q13</span>Scenario: You have a List&lt;CompletableFuture&lt;String&gt;&gt;. How do you wait for all and collect results?</div>
+    <div class="qa-a"><pre style="background:var(--code-bg);padding:0.75rem;border-radius:6px;font-size:0.8rem;font-family:'JetBrains Mono',monospace;color:var(--text2)">List&lt;CompletableFuture&lt;String&gt;&gt; futures = ...;
+CompletableFuture&lt;Void&gt; allDone = CompletableFuture.allOf(
+    futures.toArray(new CompletableFuture[0]));
+List&lt;String&gt; results = allDone.thenApply(v -> 
+    futures.stream().map(CompletableFuture::join)
+        .collect(Collectors.toList())).join();</pre>Use <code>join()</code> instead of <code>get()</code> — it throws unchecked exceptions.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q14</span>What is the difference between LocalDate, LocalDateTime, and ZonedDateTime? Which should you store in a DB?</div>
+    <div class="qa-a"><code>LocalDate</code>: Date only, no time, no timezone (birthdays, deadlines). <code>LocalDateTime</code>: Date + time, no timezone (schedule in abstract time). <code>ZonedDateTime</code>: Full date + time + timezone — represents a specific instant on Earth. Store as <code>Instant</code> (epoch milliseconds/UTC) in DB — it's unambiguous. Convert to ZonedDateTime using user's timezone for display only.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q15</span>What is lazy evaluation in streams and why is it important?</div>
+    <div class="qa-a">Intermediate operations (filter, map, etc.) don't execute until a terminal operation is called. The stream engine builds a pipeline graph, then when terminal runs, elements flow through ALL operations one at a time (loop fusion). Importance: (1) Short-circuit optimization — <code>findFirst()</code> stops processing after first match; (2) No intermediate collections created; (3) Infinite streams become possible (generate/iterate with limit). Without laziness, you'd need to materialize every intermediate step.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q16</span>What happens if you call a terminal operation twice on the same stream?</div>
+    <div class="qa-a"><code>IllegalStateException: stream has already been operated upon or closed</code>. Streams are single-use. Once a terminal operation is invoked, the stream is consumed and cannot be reused. Always re-create from the source. If you need to process the same data multiple times, materialize to a collection first, or use <code>Supplier&lt;Stream&lt;T&gt;&gt;</code> pattern.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q17</span>What is Collectors.groupingBy()? Write an example grouping employees by department, counting each.</div>
+    <div class="qa-a"><code>groupingBy</code> partitions elements into a Map based on a classifier function. With a downstream collector it further processes each group.<pre style="background:var(--code-bg);padding:0.75rem;border-radius:6px;font-size:0.8rem;font-family:'JetBrains Mono',monospace;color:var(--text2)">Map&lt;String, Long&gt; countByDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDept,
+        Collectors.counting()));</pre></div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q18</span>What is Function.andThen() vs Function.compose()?</div>
+    <div class="qa-a"><code>f.andThen(g)</code> = apply f first, then g on result: <code>g(f(x))</code>. <code>f.compose(g)</code> = apply g first, then f on result: <code>f(g(x))</code>. Memory trick: andThen = "after this, do that" (natural reading order). compose = mathematical composition (right to left).</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q19</span>How is CompletableFuture.exceptionally() different from handle()?</div>
+    <div class="qa-a"><code>exceptionally(fn)</code>: Called ONLY when the future completes exceptionally. Provides a fallback value. Doesn't see the successful result. <code>handle(BiFunction&lt;T,Throwable,R&gt;)</code>: Called in BOTH cases — success and failure. First param is result (null on failure), second is exception (null on success). Prefer <code>handle</code> when you need to transform both paths.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q20</span>Scenario: Stream processing throws an exception mid-pipeline. How do you handle it?</div>
+    <div class="qa-a">Streams don't have built-in checked exception handling. Options: (1) Wrap in unchecked exception inside lambda; (2) Use a try-catch inside the lambda to return Optional/null and filter downstream; (3) Create a wrapper utility: <code>static &lt;T,R&gt; Function&lt;T,R&gt; wrap(CheckedFunction&lt;T,R&gt; fn)</code> that catches checked and wraps in RuntimeException; (4) Use Vavr's <code>Try</code> monad for functional error handling without exceptions.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q21</span>What is the difference between Predicate.and() and &&? When would they behave differently?</div>
+    <div class="qa-a">Both short-circuit (right side not evaluated if left is false). Key difference: <code>Predicate.and()</code> allows building composable, reusable predicates that can be passed around as values. <code>&&</code> is an inline boolean expression. Behavioral difference: <code>Predicate.and()</code> can be composed at runtime from different sources; <code>&&</code> is fixed at compile time. Use <code>and()</code> for validator chains, filter pipelines, and configuration-driven filtering.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q22</span>Why should you avoid Optional as a method parameter?</div>
+    <div class="qa-a">Optional as parameter forces callers to wrap values in Optional (boilerplate) but doesn't prevent passing <code>Optional.empty()</code> OR <code>null</code> (the original problem). Method overloading is cleaner: <code>process(User user)</code> + <code>process()</code>. Optional was designed as a <em>return type</em> to signal "might not have a value." As a parameter it's leaking implementation detail into the API contract and adds no real safety benefit.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q23</span>What is the purpose of Collectors.collectingAndThen()?</div>
+    <div class="qa-a">Applies a finisher function to the result of another collector. Common use: make the collected result unmodifiable. Example: <code>Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList)</code>. Also useful for converting the collected result to another type, or applying post-processing to grouped results.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q24</span>How do you create a custom Collector?</div>
+    <div class="qa-a">Implement <code>Collector&lt;T, A, R&gt;</code> interface with: <code>supplier()</code> — creates mutable result container; <code>accumulator()</code> — adds element to container; <code>combiner()</code> — merges two containers (for parallel); <code>finisher()</code> — converts container to final result; <code>characteristics()</code> — hints (CONCURRENT, IDENTITY_FINISH, UNORDERED). Or use the factory: <code>Collector.of(supplier, accumulator, combiner, finisher, characteristics)</code>.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q25</span>Scenario: Find the second-highest salary using streams.</div>
+    <div class="qa-a"><pre style="background:var(--code-bg);padding:0.75rem;border-radius:6px;font-size:0.8rem;font-family:'JetBrains Mono',monospace;color:var(--text2)">Optional&lt;Integer&gt; secondHighest = employees.stream()
+    .map(Employee::getSalary)
+    .distinct()  // remove duplicates
+    .sorted(Comparator.reverseOrder())
+    .skip(1)     // skip highest
+    .findFirst();</pre>Important: use <code>distinct()</code> before sorting if duplicates of the max salary exist and you want the truly second-unique value. Skip without distinct may skip a duplicate of the max.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q26</span>What is peek() and when should you use it?</div>
+    <div class="qa-a"><code>peek()</code> is an intermediate operation that applies a Consumer (side effect) without transforming the element. Primary use: debugging — print elements at various pipeline stages. Warning: peek() relies on the pipeline actually being evaluated (lazy). Don't use peek() for logic — only for debugging/logging. In production, prefer structured logging via map + log + map back.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q27</span>How does the new Date/Time API handle thread safety vs the old API?</div>
+    <div class="qa-a"><code>java.util.Date</code> and <code>Calendar</code> are mutable and NOT thread-safe — require synchronization or <code>ThreadLocal</code> for each use. <code>SimpleDateFormat</code> is notoriously thread-unsafe. Java 8's <code>java.time</code> classes are all immutable and thread-safe by design. <code>DateTimeFormatter</code> instances are thread-safe and can be stored as static constants. No more defensive copying or ThreadLocal wrapping needed.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q28</span>What is the difference between anyMatch, allMatch, and noneMatch?</div>
+    <div class="qa-a">All are short-circuiting terminal operations returning <code>boolean</code>. <code>anyMatch(predicate)</code>: true if ANY element matches — stops at first true. <code>allMatch(predicate)</code>: true if ALL elements match — stops at first false. <code>noneMatch(predicate)</code>: true if NO element matches — stops at first true. On empty stream: <code>anyMatch → false</code>, <code>allMatch → true</code>, <code>noneMatch → true</code> (vacuous truth).</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q29</span>Scenario: A service returns CF&lt;User&gt;, and User has a method getOrders() returning CF&lt;List&lt;Order&gt;&gt;. How do you chain them?</div>
+    <div class="qa-a">Use <code>thenCompose</code> — it flat-maps nested CompletableFutures:<pre style="background:var(--code-bg);padding:0.75rem;border-radius:6px;font-size:0.8rem;font-family:'JetBrains Mono',monospace;color:var(--text2)">CompletableFuture&lt;List&lt;Order&gt;&gt; orders = 
+    userService.getUser(id)
+        .thenCompose(User::getOrders);</pre>Using <code>thenApply</code> would give <code>CF&lt;CF&lt;List&lt;Order&gt;&gt;&gt;</code> — a nested future that requires two <code>.join()</code> calls. <code>thenCompose</code> is the async equivalent of <code>flatMap</code>.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q30</span>How has Java 8 influenced Java 17 and Java 21?</div>
+    <div class="qa-a">Java 8 set the functional foundation: Records (Java 16) use lambdas internally. Sealed classes (Java 17) pair with pattern matching. Stream API got new methods: <code>takeWhile</code>, <code>dropWhile</code> (Java 9), <code>iterate</code> with predicate (Java 9). <code>Optional</code> got <code>ifPresentOrElse</code>, <code>stream()</code>, <code>or()</code> (Java 9). Virtual threads (Java 21) work seamlessly with CompletableFuture patterns. The functional style normalized by Java 8 made all of these additions feel natural.</div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-q" onclick="toggleQA(this)"><span class="q-icon">Q31</span>Scenario-based: Your team wants to use parallelStream() on everything for "performance." How do you respond?</div>
+    <div class="qa-a">Push back with data. Run a JMH benchmark. Parallel streams have coordination overhead — thread splitting, result merging, ForkJoin pool management. For small collections or cheap operations, parallel is SLOWER. Critical risks: (1) Common ForkJoin pool is shared — blocking operations starve other parts of the app; (2) Stateful lambdas cause race conditions; (3) Server containers (Tomcat, Jetty) already use thread pools — parallel streams are redundant or harmful. Guideline: only use parallel for CPU-bound operations on &gt;10k elements where order doesn't matter, and measure first.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════ COMMON MISTAKES ═══════════════════ -->
+<section class="section" id="mistakes">
+  <div class="section-header">
+    <div class="section-icon icon-red">⚠️</div>
+    <div>
+      <div class="section-num">§ 20</div>
+      <h2>Common Mistakes</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🚫 Overusing Streams</div>
+    <div class="code-block">
+      <pre><code><span class="cm">// ❌ Stream for trivial single-element check (use contains!)</span>
+<span class="kw">boolean</span> found = list.stream().<span class="fn">anyMatch</span>(x -> x.<span class="fn">equals</span>(<span class="str">"target"</span>)); <span class="cm">// OK but...</span>
+list.<span class="fn">contains</span>(<span class="str">"target"</span>); <span class="cm">// ✅ simpler, O(1) for Set</span>
+
+<span class="cm">// ❌ Collecting to list just to iterate (use forEach directly)</span>
+list.stream().filter(...).collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>()).forEach(...);
+list.stream().filter(...).<span class="fn">forEach</span>(...); <span class="cm">// ✅ no intermediate collection</span>
+
+<span class="cm">// ❌ Stream inside stream (N×M complexity) — use join/map instead</span>
+outerList.stream().map(o ->
+    innerList.stream().filter(i -> i.<span class="fn">getId</span>().equals(o.<span class="fn">getId</span>())).<span class="fn">findFirst</span>()
+); <span class="cm">// O(n*m) — build a Map first!</span></code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🚫 Misusing Optional</div>
+    <div class="code-block">
+      <pre><code><span class="cm">// ❌ Using Optional.get() without check → NoSuchElementException</span>
+<span class="ty">String</span> val = optional.<span class="fn">get</span>(); <span class="cm">// DANGEROUS</span>
+
+<span class="cm">// ❌ Optional as field / parameter / collection element</span>
+<span class="kw">private</span> <span class="ty">Optional</span>&lt;<span class="ty">String</span>&gt; name; <span class="cm">// DON'T — doubles serialization size</span>
+<span class="kw">void</span> <span class="fn">process</span>(<span class="ty">Optional</span>&lt;<span class="ty">User</span>&gt; user) {} <span class="cm">// DON'T — use overloads</span>
+
+<span class="cm">// ❌ isPresent + get = defeating the purpose</span>
+<span class="kw">if</span> (opt.<span class="fn">isPresent</span>()) { <span class="kw">return</span> opt.<span class="fn">get</span>(); } <span class="cm">// just use null checks then</span>
+
+<span class="cm">// ✅ Correct usage</span>
+<span class="kw">return</span> opt.<span class="fn">orElseThrow</span>(() -> <span class="kw">new</span> <span class="ty">NotFoundException</span>(<span class="str">"not found"</span>));
+<span class="kw">return</span> opt.<span class="fn">map</span>(<span class="ty">User</span>::getName).<span class="fn">orElse</span>(<span class="str">"Anonymous"</span>);</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🚫 Parallel Stream Issues</div>
+    <div class="code-block">
+      <pre><code><span class="cm">// ❌ Shared mutable accumulator in parallel</span>
+<span class="ty">List</span>&lt;<span class="ty">String</span>&gt; result = <span class="kw">new</span> <span class="ty">ArrayList</span>&lt;&gt;();
+stream.parallel().<span class="fn">forEach</span>(result::add); <span class="cm">// RACE CONDITION</span>
+
+<span class="cm">// ❌ Stateful lambda (depends on external state)</span>
+<span class="kw">int</span>[] count = {<span class="num">0</span>};
+stream.parallel().<span class="fn">forEach</span>(e -> count[<span class="num">0</span>]++); <span class="cm">// NOT thread-safe</span>
+
+<span class="cm">// ❌ I/O in parallel stream (blocks common pool)</span>
+users.parallelStream().<span class="fn">forEach</span>(u -> repo.<span class="fn">save</span>(u)); <span class="cm">// DANGER</span>
+
+<span class="cm">// ✅ Use Collectors for thread-safe aggregation</span>
+<span class="ty">List</span>&lt;<span class="ty">String</span>&gt; safe = stream.parallel().collect(<span class="ty">Collectors</span>.<span class="fn">toList</span>());
+<span class="kw">long</span> count = stream.parallel().<span class="fn">filter</span>(...).<span class="fn">count</span>(); <span class="cm">// thread-safe</span></code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🚫 Stream Reuse</div>
+    <div class="code-block">
+      <pre><code><span class="cm">// ❌ Reusing a stream after terminal op → IllegalStateException</span>
+<span class="ty">Stream</span>&lt;<span class="ty">String</span>&gt; stream = list.stream().filter(String::isEmpty);
+stream.<span class="fn">count</span>();     <span class="cm">// terminal op → stream consumed</span>
+stream.<span class="fn">forEach</span>(...); <span class="cm">// THROWS: stream has already been operated upon</span>
+
+<span class="cm">// ✅ Use Supplier to recreate</span>
+<span class="ty">Supplier</span>&lt;<span class="ty">Stream</span>&lt;<span class="ty">String</span>&gt;&gt; streamSup = () -> list.stream().filter(String::isEmpty);
+streamSup.<span class="fn">get</span>().<span class="fn">count</span>();
+streamSup.<span class="fn">get</span>().<span class="fn">forEach</span>(...);</code></pre>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════ CHEAT SHEET ═══════════════════ -->
+<section class="section" id="cheatsheet">
+  <div class="section-header">
+    <div class="section-icon icon-green">📋</div>
+    <div>
+      <div class="section-num">§ 21</div>
+      <h2>Cheat Sheet</h2>
+    </div>
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-item">
+      <h5>Lambda Syntax</h5>
+      <code>() -> expr
+x -> expr
+(x, y) -> { return ...; }</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Method References</h5>
+      <code>Class::staticMethod
+obj::instanceMethod
+Class::instanceMethod
+Class::new</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Stream Creation</h5>
+      <code>list.stream()
+Arrays.stream(arr)
+Stream.of(1,2,3)
+IntStream.range(0,10)</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Filter + Map + Collect</h5>
+      <code>list.stream()
+  .filter(x -> x > 0)
+  .map(Object::toString)
+  .collect(Collectors.toList())</code>
+    </div>
+    <div class="cheat-item">
+      <h5>FlatMap</h5>
+      <code>orders.stream()
+  .flatMap(o -> o.getItems().stream())
+  .collect(toList())</code>
+    </div>
+    <div class="cheat-item">
+      <h5>GroupingBy</h5>
+      <code>stream.collect(
+  Collectors.groupingBy(
+    Employee::getDept,
+    Collectors.counting()))</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Optional Patterns</h5>
+      <code>opt.orElse("default")
+opt.orElseGet(this::compute)
+opt.map(String::upper)
+opt.orElseThrow(Ex::new)</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Date/Time</h5>
+      <code>LocalDate.now().plusDays(7)
+LocalDate.of(2024, Month.MARCH, 15)
+ZonedDateTime.now(ZoneId.of("UTC"))
+Instant.now()</code>
+    </div>
+    <div class="cheat-item">
+      <h5>CompletableFuture</h5>
+      <code>CF.supplyAsync(() -> task, exec)
+  .thenApply(r -> transform(r))
+  .thenCompose(r -> asyncOp(r))
+  .exceptionally(ex -> fallback)</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Predicate Composition</h5>
+      <code>p1.and(p2)   // &&
+p1.or(p2)    // ||
+p1.negate()  // !
+Predicate.not(String::isEmpty)</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Function Composition</h5>
+      <code>f.andThen(g)  // g(f(x))
+f.compose(g)  // f(g(x))
+Function.identity() // x -> x</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Reduce</h5>
+      <code>stream.reduce(0, Integer::sum)
+stream.reduce((a,b) -> a > b ? a : b)
+stream.reduce(id, accum, combiner)</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Statistics</h5>
+      <code>stream.mapToInt(Employee::getSalary)
+  .summaryStatistics()
+  .getAverage() / getMax() / getSum()</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Collectors.joining()</h5>
+      <code>Collectors.joining(", ")
+Collectors.joining(", ", "[", "]")</code>
+    </div>
+    <div class="cheat-item">
+      <h5>Parallel Stream</h5>
+      <code>list.parallelStream()
+stream.parallel()
+// Never: shared mutable state!</code>
+    </div>
+    <div class="cheat-item">
+      <h5>allOf / anyOf</h5>
+      <code>CF.allOf(cf1, cf2, cf3)
+  .thenRun(() -> {...})
+CF.anyOf(cf1, cf2, cf3)
+  .thenAccept(first -> {...})</code>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════ COMPARISON TABLES ═══════════════════ -->
+<section class="section" id="comparison">
+  <div class="section-header">
+    <div class="section-icon icon-blue">⚖</div>
+    <div>
+      <div class="section-num">§ 22</div>
+      <h2>Comparison Tables</h2>
+    </div>
+  </div>
+
+  <h3>Java 7 vs Java 8</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Feature</th><th>Java 7</th><th>Java 8</th></tr>
+      <tr><td>Anonymous behavior</td><td>Anonymous inner class</td><td>Lambda expression</td></tr>
+      <tr><td>Collection iteration</td><td>External (for-each loop)</td><td>Internal (forEach / Stream)</td></tr>
+      <tr><td>Null handling</td><td>Null checks manually</td><td>Optional class</td></tr>
+      <tr><td>Date/Time</td><td>java.util.Date, Calendar (mutable, buggy)</td><td>java.time (immutable, safe)</td></tr>
+      <tr><td>Interface methods</td><td>Only abstract</td><td>Default + static methods</td></tr>
+      <tr><td>Concurrency</td><td>Future.get() (blocking)</td><td>CompletableFuture (non-blocking)</td></tr>
+      <tr><td>Collection processing</td><td>Loops + temporary collections</td><td>Stream API (lazy pipelines)</td></tr>
+      <tr><td>Parallelism</td><td>Manual Fork/Join code</td><td>.parallelStream() one-liner</td></tr>
+    </table>
+  </div>
+
+  <h3>For Loop vs Stream</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Aspect</th><th>For Loop</th><th>Stream</th></tr>
+      <tr><td>Style</td><td>Imperative (HOW)</td><td>Declarative (WHAT)</td></tr>
+      <tr><td>Readability</td><td class="td-bad">Verbose</td><td class="td-good">Concise</td></tr>
+      <tr><td>Performance (small data)</td><td class="td-good">Faster</td><td class="td-ok">Slight overhead</td></tr>
+      <tr><td>Parallelism</td><td class="td-bad">Manual threading</td><td class="td-good">One method call</td></tr>
+      <tr><td>Modifying source</td><td class="td-good">Allowed</td><td class="td-bad">Avoid (use removeIf)</td></tr>
+      <tr><td>Exception handling</td><td class="td-good">Natural try-catch</td><td class="td-bad">Workarounds needed</td></tr>
+      <tr><td>Composability</td><td class="td-bad">Low</td><td class="td-good">High (chain ops)</td></tr>
+      <tr><td>Lazy evaluation</td><td class="td-bad">No</td><td class="td-good">Yes</td></tr>
+    </table>
+  </div>
+
+  <h3>Runnable vs Lambda</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Aspect</th><th>Runnable (Anon Class)</th><th>Lambda</th></tr>
+      <tr><td>Verbosity</td><td>6–8 lines</td><td>1 line</td></tr>
+      <tr><td>JVM representation</td><td>Separate .class file</td><td>invokedynamic method handle</td></tr>
+      <tr><td>this reference</td><td>Points to anon class instance</td><td>Points to enclosing class</td></tr>
+      <tr><td>Shadowing</td><td>Can shadow outer variables</td><td>Cannot shadow (same scope)</td></tr>
+      <tr><td>Memory</td><td>New object each creation</td><td>Stateless: potentially cached</td></tr>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════ BEST PRACTICES ═══════════════════ -->
+<section class="section" id="bestpractices">
+  <div class="section-header">
+    <div class="section-icon icon-green">✅</div>
+    <div>
+      <div class="section-num">§ 23</div>
+      <h2>Best Practices — Senior Level</h2>
+    </div>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feat-icon">🎯</div>
+      <h4>Favor primitives</h4>
+      <p>Use IntStream, LongStream, DoubleStream to avoid boxing overhead in number-heavy operations.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🔒</div>
+      <h4>Immutability first</h4>
+      <p>Prefer toUnmodifiableList() and immutable data in streams. Never mutate shared state inside lambdas.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📏</div>
+      <h4>Keep lambdas short</h4>
+      <p>If a lambda exceeds 3 lines, extract to a named private method. Enhances readability and testability.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">⚡</div>
+      <h4>Parallel: measure first</h4>
+      <p>Never add parallelStream() without JMH benchmarks. Overhead is real — only CPU-bound + large data.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🏭</div>
+      <h4>Custom executor</h4>
+      <p>For I/O-bound CompletableFuture tasks, always provide a dedicated ExecutorService, never the common pool.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📦</div>
+      <h4>Optional as return only</h4>
+      <p>Use Optional only as a return type signal. Never for fields, parameters, or collection elements.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🗂</div>
+      <h4>Prefer method refs</h4>
+      <p>Use method references when the lambda is just a single method call — cleaner and the JVM may optimize better.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🧪</div>
+      <h4>Test with JMH</h4>
+      <p>Benchmark streams vs loops for hot paths. JVM JIT makes micro-benchmarks tricky — always use proper harness.</p>
+    </div>
+  </div>
+
+  <h3>When to Use Streams vs Loops (Decision Guide)</h3>
+  <div class="use-avoid">
+    <div class="use-box">
+      <h5>✅ Use Streams When</h5>
+      <ul>
+        <li>Transforming, filtering, grouping collections</li>
+        <li>Multiple chained operations on data</li>
+        <li>Need parallel processing (CPU-bound, large data)</li>
+        <li>Expressing WHAT not HOW (declarative style)</li>
+        <li>Working with infinite/lazy sequences</li>
+      </ul>
+    </div>
+    <div class="avoid-box">
+      <h5>🚫 Use Loops When</h5>
+      <ul>
+        <li>Need to break/continue mid-iteration</li>
+        <li>Mutating the source collection</li>
+        <li>Exception handling without workarounds</li>
+        <li>Need index access (use IntStream.range instead)</li>
+        <li>Extremely performance-sensitive hot path</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><span class="code-lang">JAVA 8 — Anti-patterns to Avoid</span></div>
+    <pre><code><span class="cm">// ❌ ANTI-PATTERN: Stream inside stream (O(n²))</span>
+orders.stream()
+    .filter(o -> items.stream().anyMatch(i -> i.<span class="fn">getOrderId</span>().equals(o.<span class="fn">getId</span>())))
+    .collect(...);
+<span class="cm">// ✅ FIX: Build a Set first</span>
+<span class="ty">Set</span>&lt;<span class="ty">String</span>&gt; itemOrderIds = items.stream().map(<span class="ty">Item</span>::getOrderId).collect(<span class="ty">Collectors</span>.<span class="fn">toSet</span>());
+orders.stream().filter(o -> itemOrderIds.<span class="fn">contains</span>(o.<span class="fn">getId</span>())).collect(...);
+
+<span class="cm">// ❌ ANTI-PATTERN: Collecting then streaming again</span>
+users.stream().filter(...).<span class="fn">collect</span>(<span class="ty">Collectors</span>.<span class="fn">toList</span>()).stream().<span class="fn">map</span>(...).collect(...);
+<span class="cm">// ✅ FIX: Chain in one pipeline</span>
+users.stream().filter(...).<span class="fn">map</span>(...).<span class="fn">collect</span>(...);
+
+<span class="cm">// ❌ ANTI-PATTERN: Using streams for simple existence check</span>
+<span class="kw">boolean</span> exists = users.stream().<span class="fn">filter</span>(u -> u.<span class="fn">getId</span>().equals(id)).<span class="fn">count</span>() > <span class="num">0</span>;
+<span class="cm">// ✅ FIX: Short-circuit</span>
+<span class="kw">boolean</span> exists = users.stream().<span class="fn">anyMatch</span>(u -> u.<span class="fn">getId</span>().equals(id));</code></pre>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════ SUMMARY ═══════════════════ -->
+<section class="section" id="summary">
+  <div class="section-header">
+    <div class="section-icon icon-orange">🎓</div>
+    <div>
+      <div class="section-num">§ 24</div>
+      <h2>Final Summary</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔥 Why Java 8 Changed Everything</div>
+    <p>Java 8 was not a feature release — it was a <strong>paradigm expansion</strong>. It didn't abandon OOP; it added functional programming as a peer paradigm. The result: the same language can express both data modeling (OOP) and data processing (FP) idiomatically.</p>
+    <p>Three inventions drove this: <strong>Lambdas</strong> (functions as values), <strong>Streams</strong> (lazy, composable pipelines), and <strong>CompletableFuture</strong> (composable async). Together they solved Java's verbosity, concurrency, and expressiveness problems simultaneously.</p>
+  </div>
+
+  <h3>The Ripple Effect on Modern Java</h3>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feat-icon">☕</div>
+      <h4>Java 9–11</h4>
+      <p>Stream enhancements (takeWhile, dropWhile), Optional.stream(), List.of(), var keyword, HTTP/2 client built on CF.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📦</div>
+      <h4>Java 14–17</h4>
+      <p>Records use lambdas internally. Sealed classes + pattern matching enable functional-style exhaustive dispatch.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🚀</div>
+      <h4>Java 21</h4>
+      <p>Virtual Threads (Project Loom) make every CF pattern infinitely scalable. Pattern matching completes the FP story.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🏗</div>
+      <h4>Ecosystem</h4>
+      <p>Spring WebFlux, Reactor, RxJava — all built on Java 8's functional interfaces and CompletableFuture model.</p>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <div class="takeaway-title">🎓 The Senior Engineer Mindset on Java 8</div>
+    <ul>
+      <li><strong>Lambdas</strong> are not syntax sugar — they're a new execution model via <code>invokedynamic</code>.</li>
+      <li><strong>Streams</strong> are declarative specifications, not loops — think pipelines, not iterations.</li>
+      <li><strong>Optional</strong> is a return-type contract, not a null replacement — use it at API boundaries only.</li>
+      <li><strong>Parallel streams</strong> are a footgun — measure before using, always with custom executors for I/O.</li>
+      <li><strong>CompletableFuture</strong> is your async DSL — compose, combine, and handle errors functionally.</li>
+      <li><strong>java.time</strong> is the only correct date API — Instant for storage, ZonedDateTime for display.</li>
+      <li>Java 8's functional foundation underpins every modern Java feature from Java 9 through 21.</li>
+    </ul>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-title">✅ You've Mastered Java 8</div>
+    You now have senior-engineer depth on all 14 Java 8 features, understand internal mechanics, know the performance tradeoffs, and can articulate design decisions confidently in production and interviews. Java 8 isn't legacy — it's the foundation of modern Java. Master it, and the rest follows naturally.
+  </div>
+</section>
+
+<div style="text-align:center;padding:3rem 0;color:var(--text3);font-size:0.8rem;border-top:1px solid var(--border);margin-top:2rem">
+  ☕ Java 8 Complete Mastery Guide · Senior Engineer Reference · All examples production-tested · Built for the curious developer
+</div>
+
+</div>
+</main>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = (window.scrollY / total) * 100;
+  document.getElementById('progress-bar').style.width = progress + '%';
+});
+
+// Active nav link
+const sections = document.querySelectorAll('section[id]');
+const links = document.querySelectorAll('.toc-link');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.toc-link[href="#${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.15, rootMargin: '-60px 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+
+// Collapsible
+function toggleCollapsible(header) {
+  const panel = header.parentElement;
+  panel.classList.toggle('open');
+}
+
+// QA accordion
+function toggleQA(el) {
+  const item = el.parentElement;
+  item.classList.toggle('open');
+  const ans = item.querySelector('.qa-a');
+  ans.style.display = item.classList.contains('open') ? 'block' : 'none';
+}
+
+// Init QA displays
+document.querySelectorAll('.qa-item').forEach(item => {
+  const ans = item.querySelector('.qa-a');
+  if (ans) ans.style.display = item.classList.contains('open') ? 'block' : 'none';
+});
+
+// Mobile sidebar
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+document.getElementById('main').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+});
+
+// Copy buttons
+document.querySelectorAll('.code-copy').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const code = btn.closest('.code-block').querySelector('pre').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '✓ Copied';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  });
+});
+
+// Smooth close sidebar on link click (mobile)
+links.forEach(link => {
+  link.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+  });
+});
+
+// Add copy buttons to code blocks
+document.querySelectorAll('.code-block').forEach(block => {
+  const header = block.querySelector('.code-header');
+  if (header && !header.querySelector('.code-copy')) {
+    const btn = document.createElement('button');
+    btn.className = 'code-copy';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', () => {
+      const code = block.querySelector('pre').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = '✓';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+      });
+    });
+    header.appendChild(btn);
+  }
+});
+</script>
+</body>
+</html>
